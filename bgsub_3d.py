@@ -9,6 +9,7 @@ reference_48ch.npy file needed).
     python bgsub_3d.py capture.cache.npz        # REPLAY from cache (fast, no .bin)
     python bgsub_3d.py capture.bin --nocal      # calibration OFF (A/B the effect)
     python bgsub_3d.py capture.bin --nobg       # no background suppression (raw)
+    python bgsub_3d.py capture.bin --nocomp     # TDM Doppler compensation OFF (A/B the effect)
     python bgsub_3d.py --selftest               # check the math, no file needed
 
 Processing the .bin detects every target point down to STORE_DB below the frame
@@ -24,7 +25,7 @@ CAL_FILE at a saved one to REUSE it on a recording that has no reflector -- see
 the RF-phase caveat printed when it loads.
 
 There are NO value flags to type. Everything tunable is a global in CONFIG below.
-The only command-line switches are: --nocal, --nobg, --selftest.
+The only command-line switches are: --nocal, --nobg, --nocomp, --selftest.
 
 ----------------------------------------------------------------------------
 WHAT EACH TUNABLE MEANS  (all live in the CONFIG block right below)
@@ -112,7 +113,10 @@ C_LIGHT  = 299792458.0
 ADC_RATE = 10000e3        # 10 Msps  (digOutSampleRate)
 SLOPE    = 150.06e12      # Hz/s
 F0       = 76e9           # start frequency (Hz)
-LAMBDA   = C_LIGHT / F0
+ADC_START = 1.5e-6                                   # adcStartTimeConst in common.c
+ACQ_TIME  = SAMPLES / ADC_RATE                       # 25.6 us
+F_CENTER  = F0 + SLOPE * (ADC_START + ACQ_TIME / 2)  # ~78.15 GHz (ADC-window center)
+LAMBDA    = C_LIGHT / F_CENTER
 #   range bin spacing ~3.9 cm/bin  ->  256 bins span ~10 m (max unambiguous range)
 
 # ---- doppler / velocity axis (from your chirp profile) ----
@@ -129,8 +133,8 @@ VEL_SIGN      = +1.0          # flip to -1.0 if approaching/receding come out sw
 
 # ---- frame ranges (read off your range_over_frames.png stage map) ----
 BG_FRAMES    = (1000, 2000)   # empty-scene frames -> background template
-TARGET_START = 2000           # first frame to build the cloud from (moving-target stage)
-CAL_FRAMES   = (100, 800)     # reflector-at-boresight frames; set None to disable cal
+TARGET_START = 500           # first frame to build the cloud from (moving-target stage)
+CAL_FRAMES   = (100, 500)     # reflector-at-boresight frames; set None to disable cal
 CAL_RANGE_M  = 4.2            # where the reflector sat (m); None = auto-pick strongest
 CAL_FILE     = None           # path to a saved <capture>.cal.npz to REUSE instead of
                               #   building from CAL_FRAMES (for recordings with no
@@ -425,13 +429,17 @@ def load_calibration(path):
 # ============================================================
 # ONE FRAME -> per-point rows
 # ============================================================
-def cloud(clean, cal, store_db, gate):
+def cloud(clean, cal, store_db, gate, comp_on=True):
     """clean cube -> per-point rows, one row per detection within store_db of the
     frame peak AND with angle confidence >= STORE_CONF_DB.
     Columns: [x, y, z, amp, vel, reldB, range_m, az, el, conf].
       reldB = dB below this frame's peak (<=0)  -> DET_DB re-trims later.
       conf  = angle peak-to-median sharpness (dB) -> MIN_CONF_DB re-trims later.
       vel   = signed radial velocity (m/s).
+    comp_on : apply the TDM Doppler phase compensation (True). --nocomp sets it
+      False so you can A/B the effect on identical data. NOTE the compensation
+      happens HERE, at build time, so --nocomp only matters when processing a .bin;
+      a cache already has it baked in (the cache's label records which way).
     Empty (0x10) if the frame doesn't clear the gate."""
     rng = range_fft(clean)
     dop, mag = range_doppler(rng)
@@ -440,7 +448,18 @@ def cloud(clean, cal, store_db, gate):
     peak = mag[:, 4:].max()                           # ignore near-range coupling
     pts = []
     for dbin, rbin in detect(mag, store_db):
+        # ---- TDM-MIMO Doppler phase compensation (BEFORE beamforming) ----
+        # In TDMA, TX m is sampled m*T_CHIRP into each loop, so a moving target
+        # carries an intra-loop phase 2*pi*k*m/(NUM_LOOPS*NUM_TX) at Doppler bin k.
+        # The Doppler FFT does NOT remove it (it doesn't vary loop-to-loop), so it
+        # sits as a linear phase ramp across the TX columns -- indistinguishable from
+        # an angle ramp, biasing az/el in proportion to velocity. De-rotate each TX
+        # column by the conjugate. At k=0 (static clutter / reflector) this is a no-op.
         snap = dop[dbin, :, :, rbin]                  # [tx, rx]
+        if comp_on:
+            k = dbin - ZERO_DOPPLER                   # signed Doppler bin (0 = static)
+            comp = np.exp(-1j * 2 * np.pi * k * np.arange(NUM_TX) / (NUM_LOOPS * NUM_TX))
+            snap = snap * comp[:, None]               # TX axis de-rotated
         if cal is not None:
             snap = snap * cal                         # remove per-channel phase offsets
         az, el, conf = estimate_angles_search(snap)
@@ -473,7 +492,7 @@ def trim(p, det_db=None, min_conf=None):
 # ============================================================
 # BUILD all clouds over the target frames
 # ============================================================
-def build(path, nobg, nocal):
+def build(path, nobg, nocal, nocomp=False):
     f = open(path, "rb")
     mm = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
     starts = chirp_offsets(mm)
@@ -492,7 +511,10 @@ def build(path, nobg, nocal):
         cal = build_calibration(mm, starts, CAL_FRAMES, CAL_RANGE_M, n_frames)
         if cal is not None:
             save_calibration(cal, os.path.splitext(path)[0] + ".cal.npz")
-    cal_label = "cal" if cal is not None else "no cal"
+    cal_label = ("cal" if cal is not None else "no cal") + (", NO COMP" if nocomp else ", comp")
+    if nocomp:
+        print("TDM Doppler compensation OFF (--nocomp) -- A/B mode, expect moving "
+              "targets to smear/hop in angle")
 
     target = min(TARGET_START, n_frames)
 
@@ -527,7 +549,8 @@ def build(path, nobg, nocal):
     # ---- per-frame clouds (stored generously down to STORE_DB; trimmed at render) ----
     clouds = []
     for fr in range(target, n_frames):
-        clouds.append(cloud(frame_cube(mm, starts, fr) - template[None], cal, STORE_DB, gate))
+        clouds.append(cloud(frame_cube(mm, starts, fr) - template[None], cal, STORE_DB, gate,
+                            comp_on=not nocomp))
         if fr % 50 == 0:
             print(f"\r  clouds: frame {fr}/{n_frames}", end="", flush=True)
     print()
@@ -680,49 +703,79 @@ def render(clouds, cal_label, out):
 # ============================================================
 # SELF TEST: synthesise a known target, run the whole pipeline, check recovery
 # ============================================================
-def _synth_cube(R_m, az_deg, el_deg, snr_db=30):
+def _synth_cube(R_m, az_deg, el_deg, vel_ms=0.0, snr_db=30):
+    """Synthesise a point target at (R, az, el) moving at vel_ms (radial, m/s).
+    A NONZERO vel_ms injects BOTH the inter-loop Doppler phase (so the target lands
+    in a real Doppler bin) AND the intra-loop per-TX phase that TDMA introduces --
+    i.e. it reproduces the exact contamination that cloud()'s Doppler compensation
+    removes. vel_ms=0 reduces to the old static target (compensation is a no-op)."""
     az, el = np.radians(az_deg), np.radians(el_deg)
     f_beat = 2 * SLOPE * R_m / C_LIGHT
     n = np.arange(SAMPLES)
     range_sig = np.exp(2j * np.pi * f_beat * n / ADC_RATE)   # beat tone -> range bin
-    cube = np.zeros((NUM_LOOPS, NUM_TX, NUM_RX, SAMPLES), complex)
-    for tx in range(NUM_TX):
-        x_tx, z_tx = TX_POS[tx]
-        for rx in range(NUM_RX):
-            x_lam = (x_tx + RX_X[rx]) * 0.5
-            z_lam = z_tx
-            # match the steering convention (AZ_SIGN) so the test is self-consistent
-            phase = 2 * np.pi * (AZ_SIGN * x_lam * np.sin(az) * np.cos(el) +
-                                 z_lam * np.sin(el))
-            cube[:, tx, rx, :] = range_sig[None, :] * np.exp(1j * phase)
+    f_d = 2.0 * vel_ms / LAMBDA                              # Doppler frequency (Hz)
+
+    # angle phase per (tx, rx) virtual element -- matches the steering convention
+    x_lam = (TX_POS[:, 0][:, None] + RX_X[None, :]) * 0.5         # (tx, rx), lambda
+    z_lam = np.repeat(TX_POS[:, 1][:, None], NUM_RX, axis=1)      # (tx, rx), lambda
+    ang = 2 * np.pi * (AZ_SIGN * x_lam * np.sin(az) * np.cos(el) +
+                       z_lam * np.sin(el))                       # (tx, rx)
+
+    # TDMA sample time of each (loop, tx): TX m fires m*T_CHIRP into a loop of length
+    # T_DOPPLER (= NUM_TX*T_CHIRP). The m*T_CHIRP part is exactly what biases angle.
+    t = (np.arange(NUM_LOOPS)[:, None] * T_DOPPLER +
+         np.arange(NUM_TX)[None, :] * T_CHIRP)                  # (loop, tx), seconds
+    dopp = 2 * np.pi * f_d * t                                  # (loop, tx)
+
+    phase = ang[None, :, :] + dopp[:, :, None]                  # (loop, tx, rx)
+    cube = range_sig[None, None, None, :] * np.exp(1j * phase)[..., None]
     noise = np.random.randn(*cube.shape) + 1j * np.random.randn(*cube.shape)
     return cube + noise * 10 ** (-snr_db / 20)
 
 
-def selftest():
-    print("self-test: target at R=6.0 m, az=+20 deg, el=+8 deg")
-    cube = _synth_cube(6.0, 20.0, 8.0)
-    pts = cloud(cube, cal=None, store_db=STORE_DB, gate=0.0)
-    if len(pts) == 0:
-        print("  RESULT: CHECK  (no points detected)")
-        return False
+def _recover(pts):
+    """Strongest point of a cloud -> (R, az, el) in m / deg."""
     best = pts[np.argmax(pts[:, 3])]
     x, y, z = best[0], best[1], best[2]
     R = float(np.sqrt(x * x + y * y + z * z))
     az = float(np.degrees(np.arctan2(x, y)))
     el = float(np.degrees(np.arcsin(np.clip(z / max(R, 1e-9), -1, 1))))
-    print(f"  recovered  R={R:5.2f} m   az={az:+6.2f} deg   el={el:+6.2f} deg")
-    print(f"  xyz        x={x:+5.2f}  y={y:+5.2f}  z={z:+5.2f}  (m)")
-    print(f"  velocity per doppler bin = {V_PER_BIN:.3f} m/s, unambiguous +/-{V_MAX:.2f} m/s")
-    ok = abs(R - 6.0) < 0.15 and abs(az - 20) < 2.0 and abs(el - 8) < 3.0
-    print("  RESULT:", "PASS" if ok else "CHECK")
+    return R, az, el
+
+
+def selftest():
+    ok_all = True
+    print(f"velocity per doppler bin = {V_PER_BIN:.3f} m/s, unambiguous +/-{V_MAX:.2f} m/s\n")
+
+    # (A) STATIC target: compensation is a no-op here (k=0) -> checks geometry only.
+    print("self-test A: STATIC target   R=6.0 m  az=+20  el=+8")
+    pts = cloud(_synth_cube(6.0, 20.0, 8.0, vel_ms=0.0), cal=None, store_db=STORE_DB, gate=0.0)
+    if len(pts) == 0:
+        print("  RESULT: CHECK  (no points detected)"); return False
+    R, az, el = _recover(pts)
+    print(f"  recovered  R={R:5.2f} m   az={az:+6.2f}   el={el:+6.2f}")
+    okA = abs(R - 6.0) < 0.15 and abs(az - 20) < 2.0 and abs(el - 8) < 3.0
+    print("  RESULT:", "PASS" if okA else "CHECK"); ok_all &= okA
+
+    # (B) MOVING target at the SAME angle: the TDM Doppler comp must hold az/el at
+    #     20/8. Delete the comp block in cloud() and THIS is the test that fails.
+    print("\nself-test B: MOVING target   v=+4.5 m/s  R=6.0 m  az=+20  el=+8  (exercises TDM comp)")
+    pts = cloud(_synth_cube(6.0, 20.0, 8.0, vel_ms=4.5), cal=None, store_db=STORE_DB, gate=0.0)
+    if len(pts) == 0:
+        print("  RESULT: CHECK  (no points detected)"); return False
+    R, az, el = _recover(pts)
+    vbest = float(pts[np.argmax(pts[:, 3]), 4])
+    print(f"  recovered  R={R:5.2f} m   az={az:+6.2f}   el={el:+6.2f}   v={vbest:+5.2f} m/s")
+    okB = abs(az - 20) < 2.0 and abs(el - 8) < 3.0
+    print("  RESULT:", "PASS" if okB else "CHECK  <-- if this fails, the TDM Doppler comp is missing/wrong")
+    ok_all &= okB
 
     # pure noise should be trimmed by the confidence gate
     noise = np.random.randn(NUM_TX, NUM_RX) + 1j * np.random.randn(NUM_TX, NUM_RX)
     a, e, c = estimate_angles_search(noise)
-    print(f"  noise snapshot -> conf={c:.1f} dB  "
+    print(f"\n  noise snapshot -> conf={c:.1f} dB  "
           f"{'trimmed by MIN_CONF_DB' if c < MIN_CONF_DB else 'KEPT (raise MIN_CONF_DB)'}")
-    return ok
+    return ok_all
 
 
 # ============================================================
@@ -737,20 +790,28 @@ def main():
     src = args[0]
     nobg = "--nobg" in sys.argv
     nocal = "--nocal" in sys.argv
+    nocomp = "--nocomp" in sys.argv
 
     if src.lower().endswith(".npz"):
         # ---- replay from a saved point cache (no .bin needed) ----
+        if nocomp:
+            print("note: --nocomp has no effect on a cache -- the Doppler comp is applied "
+                  "at build time, so it's already baked in. Reprocess the .bin to A/B it.")
         clouds, cal_label = load_cache(src)
         out = str(args[1]) if len(args) > 1 else OUT
         render(clouds, cal_label, out)
     else:
         # ---- process the .bin: build clouds, save the cache, then render ----
-        clouds, cal_label = build(src, nobg=nobg, nocal=nocal)
-        cache_path = os.path.splitext(src)[0] + ".cache.npz"
+        clouds, cal_label = build(src, nobg=nobg, nocal=nocal, nocomp=nocomp)
+        # distinct names so an A/B (comp vs --nocomp) doesn't overwrite itself
+        tag = ".nocomp" if nocomp else ""
+        cache_path = os.path.splitext(src)[0] + tag + ".cache.npz"
         save_cache(clouds, cache_path, cal_label)
         out = OUT
         if nobg and out == "bgsub_3d.mp4":
             out = "raw_3d.mp4"
+        if nocomp:
+            out = out[:-4] + "_nocomp" + out[-4:]
         render(clouds, cal_label, out)
 
 
