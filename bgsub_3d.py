@@ -10,6 +10,8 @@ reference_48ch.npy file needed).
     python bgsub_3d.py capture.bin --nocal      # calibration OFF (A/B the effect)
     python bgsub_3d.py capture.bin --nobg       # no background suppression (raw)
     python bgsub_3d.py capture.bin --nocomp     # TDM Doppler compensation OFF (A/B the effect)
+    python bgsub_3d.py capture.bin --window     # sliding-window temporal point accumulation
+    python bgsub_3d.py capture.cache.npz --window   # ...or sweep the window from a cache
     python bgsub_3d.py --selftest               # check the math, no file needed
 
 Processing the .bin detects every target point down to STORE_DB below the frame
@@ -25,7 +27,7 @@ CAL_FILE at a saved one to REUSE it on a recording that has no reflector -- see
 the RF-phase caveat printed when it loads.
 
 There are NO value flags to type. Everything tunable is a global in CONFIG below.
-The only command-line switches are: --nocal, --nobg, --nocomp, --selftest.
+The only command-line switches are: --nocal, --nobg, --nocomp, --window/--nowindow, --selftest.
 
 ----------------------------------------------------------------------------
 WHAT EACH TUNABLE MEANS  (all live in the CONFIG block right below)
@@ -84,6 +86,15 @@ Scene / view / figure:
 
 Output:
   FPS    playback frame rate.  OUT  output filename (.mp4, else .gif).
+
+Temporal aggregation (sliding window; OFF by default, --window to enable):
+  WINDOW_AGG / WINDOW_FRAMES  each output frame shows the UNION of the detected
+                points from a window of +/-WINDOW_FRAMES frames around it, so a
+                sparse per-frame cloud accumulates into a denser one. The movie
+                keeps the SAME output frames; only point density changes. It is a
+                render-time knob (sweep it from a cache). Building the .bin with
+                --window also stores WINDOW_FRAMES "pre-roll" frames before
+                TARGET_START so the first output frame can look back past it.
 """
 
 import sys
@@ -132,9 +143,9 @@ V_MAX         = (NUM_LOOPS // 2) * V_PER_BIN             # ~+/-4.7 m/s unambiguo
 VEL_SIGN      = +1.0          # flip to -1.0 if approaching/receding come out swapped
 
 # ---- frame ranges (read off your range_over_frames.png stage map) ----
-BG_FRAMES    = (1000, 2000)   # empty-scene frames -> background template
-TARGET_START = 500           # first frame to build the cloud from (moving-target stage)
-CAL_FRAMES   = (100, 500)     # reflector-at-boresight frames; set None to disable cal
+BG_FRAMES    = (800, 1400)   # empty-scene frames -> background template
+TARGET_START = 1400           # first frame to build the cloud from (moving-target stage)
+CAL_FRAMES   = (1, 500)     # reflector-at-boresight frames; set None to disable cal
 CAL_RANGE_M  = 4.2            # where the reflector sat (m); None = auto-pick strongest
 CAL_FILE     = None           # path to a saved <capture>.cal.npz to REUSE instead of
                               #   building from CAL_FRAMES (for recordings with no
@@ -145,7 +156,7 @@ CAL_FILE     = None           # path to a saved <capture>.cal.npz to REUSE inste
 STORE_DB       = 40.0         # build the point CACHE down to this many dB below peak
                               #   (stores extra weak points so DET_DB can be re-trimmed
                               #   later from the cache without reprocessing the .bin)
-DET_DB         = 35.0         # DISPLAY amplitude trim: keep points within this many dB
+DET_DB         = 30.0         # DISPLAY amplitude trim: keep points within this many dB
                               #   of the frame peak. Render-time -> instant from a cache.
 STORE_CONF_DB  = 3.0          # cache also keeps every point whose angle confidence is at
                               #   least this (a low floor, so MIN_CONF_DB can be swept
@@ -157,12 +168,32 @@ FLOOR_DB       = 6.0          # skip a frame unless its peak is this far over re
 GATE_DROP_DB   = 30.0         # --nobg only: keep frames within this dB of loudest frame
 
 # ---- range gate (render-time spatial trim; OFF by default so it changes nothing) ----
-MIN_RANGE_M  = 0.5            # drop points closer than this (m). 0 = no near limit.
-MAX_RANGE_M  = 5           # drop points farther than this (m). None = no far limit.
+MIN_RANGE_M  = 1            # drop points closer than this (m). 0 = no near limit.
+MAX_RANGE_M  = 6           # drop points farther than this (m). None = no far limit.
                               #   e.g. set MAX_RANGE_M = 5.0 to cut everything past 5 m.
                               #   Range is stored per point, so this is a render-time
                               #   trim like DET_DB/MIN_CONF_DB -- instant from a cache,
                               #   no reprocessing, no points lost from the cache.
+
+# ---- temporal aggregation (sliding window; render-time, OFF by default) ----
+WINDOW_AGG    = False  # True -> each output frame shows the UNION of the detected points
+                       #   from a sliding window of frames centered on it (temporal
+                       #   accumulation -> denser cloud). The movie keeps the SAME output
+                       #   frames (TARGET_START..end); only point density changes. Toggle
+                       #   per-run with --window / --nowindow (flags override this).
+WINDOW_FRAMES = 10     # half-width: aggregate this many frames BEFORE and AFTER each frame
+                       #   (2*WINDOW_FRAMES+1 frames per output frame). RENDER-TIME knob --
+                       #   sweep it instantly from a cache, up to the pre-roll depth the
+                       #   cache was built with (see below).
+                       #   BOUNDARY: so the first output frame (TARGET_START) can still look
+                       #   BACK, building the .bin with --window also processes WINDOW_FRAMES
+                       #   "pre-roll" frames before TARGET_START and stores them; they feed
+                       #   the window but are NOT rendered as extra movie frames. The file
+                       #   end has no post-roll, so the last frames clamp to a shorter window.
+                       #   CAVEAT: if pre-roll reaches into an occupied stage (reflector or
+                       #   target present before TARGET_START) those points bleed into the
+                       #   first output frames -- keep WINDOW_FRAMES within the empty gap
+                       #   ahead of TARGET_START.
 
 # ---- angle search field-of-view / resolution ----
 AZ_SIGN  = +1.0               # flip to -1.0 if targets come out mirrored left/right
@@ -173,7 +204,7 @@ EL_STEP  = 1.0                # elevation grid step (deg)
 
 # ---- scene limits (m) + view ----
 XLIM     = 3.0                # x in -XLIM .. +XLIM   (left-right)
-YMAX     = 5.0               # y in 0 .. YMAX        (forward)
+YMAX     = 6.0               # y in 0 .. YMAX        (forward)
 ZLIM     = 3.0                # z in -ZLIM .. +ZLIM   (up-down; weakest axis)
 # left panel = 3D perspective. Orientation "B": forward (y) goes AWAY into the
 # screen, left-right (x) across, looking down. VIEW_AZIM = -60 puts forward into the
@@ -489,10 +520,26 @@ def trim(p, det_db=None, min_conf=None):
     return p[keep]
 
 
+def aggregate(clouds, out_idx, pre_roll, half_w):
+    """Points feeding OUTPUT frame out_idx (0-based over output frames only).
+    Output frame out_idx maps to source clouds index (pre_roll + out_idx); this
+    unions the raw rows of the sliding window [-half_w, +half_w] around it. The
+    window clamps to the available clouds -- the front reaches into the pre_roll
+    lead-in that build() stored ahead of TARGET_START, the back stops at the file
+    end (last frames get a shorter, one-sided window). Each row keeps its own
+    columns (reldB is relative to its OWN source frame), so trim() applies to the
+    union exactly as it would per frame. half_w=0 reduces to the single frame."""
+    c = pre_roll + out_idx
+    lo = max(c - half_w, 0)
+    hi = min(c + half_w, len(clouds) - 1)
+    parts = [clouds[j] for j in range(lo, hi + 1) if len(clouds[j])]
+    return np.vstack(parts) if parts else np.zeros((0, 10))
+
+
 # ============================================================
 # BUILD all clouds over the target frames
 # ============================================================
-def build(path, nobg, nocal, nocomp=False):
+def build(path, nobg, nocal, nocomp=False, window=False):
     f = open(path, "rb")
     mm = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
     starts = chirp_offsets(mm)
@@ -517,6 +564,15 @@ def build(path, nobg, nocal, nocomp=False):
               "targets to smear/hop in angle")
 
     target = min(TARGET_START, n_frames)
+    # ---- sliding-window pre-roll: process WINDOW_FRAMES frames BEFORE target so the
+    #      first output frame can still look backward (clamped to frame 0). These extra
+    #      leading clouds feed the render-time window; they are NOT rendered themselves. ----
+    pre_roll  = min(WINDOW_FRAMES, target) if window else 0
+    pre_start = target - pre_roll
+    if window:
+        print(f"temporal window ON  +/-{WINDOW_FRAMES} frames (applied at render); building "
+              f"{pre_roll} pre-roll frame(s) from {pre_start} so output frame {target} "
+              f"(TARGET_START) can look before it")
 
     # ---- background template + frame gate ----
     if nobg:
@@ -547,8 +603,9 @@ def build(path, nobg, nocal, nocomp=False):
         print(f"  gate {gate:.1f}  (+{FLOOR_DB:.0f} dB over residual)")
 
     # ---- per-frame clouds (stored generously down to STORE_DB; trimmed at render) ----
+    #      starts at pre_start (= target unless --window added a pre-roll lead-in) ----
     clouds = []
-    for fr in range(target, n_frames):
+    for fr in range(pre_start, n_frames):
         clouds.append(cloud(frame_cube(mm, starts, fr) - template[None], cal, STORE_DB, gate,
                             comp_on=not nocomp))
         if fr % 50 == 0:
@@ -557,14 +614,14 @@ def build(path, nobg, nocal, nocomp=False):
     mm.close(); f.close()
     print(f"  {sum(1 for p in clouds if len(p))}/{len(clouds)} frames have points "
           f"(stored to {STORE_DB:.0f} dB below peak)")
-    return clouds, cal_label
+    return clouds, cal_label, pre_roll
 
 
 # ============================================================
 # POINT CACHE  (store detected points so movies can be rebuilt without the .bin)
 #   Saved columns: [frame, x, y, z, amp, vel, reldB, range_m, az, el, conf]
 # ============================================================
-def save_cache(clouds, path, cal_label):
+def save_cache(clouds, path, cal_label, pre_roll=0):
     rows = []
     for fr, p in enumerate(clouds):
         if len(p):
@@ -576,8 +633,11 @@ def save_cache(clouds, path, cal_label):
                         cal_label=str(cal_label),
                         store_db=np.float64(STORE_DB),
                         store_conf_db=np.float64(STORE_CONF_DB),
-                        v_per_bin=np.float64(V_PER_BIN))
-    print(f"  saved point cache -> {path}  ({len(pts)} pts, {len(clouds)} frames, "
+                        v_per_bin=np.float64(V_PER_BIN),
+                        pre_roll=np.int64(pre_roll),
+                        window_frames=np.int64(WINDOW_FRAMES))
+    print(f"  saved point cache -> {path}  ({len(pts)} pts, {len(clouds)} frames"
+          f"{f', {pre_roll} pre-roll' if pre_roll else ''}, "
           f"to {STORE_DB:.0f} dB / conf {STORE_CONF_DB:.0f} dB)")
 
 
@@ -587,6 +647,7 @@ def load_cache(path):
     n_frames = int(d["n_frames"]); cal_label = str(d["cal_label"])
     store_db = float(d["store_db"])
     store_conf = float(d["store_conf_db"]) if "store_conf_db" in d else 0.0
+    pre_roll = int(d["pre_roll"]) if "pre_roll" in d else 0
     clouds = [np.zeros((0, 10)) for _ in range(n_frames)]
     if len(pts):
         order = np.argsort(pts[:, 0], kind="stable")
@@ -595,7 +656,8 @@ def load_cache(path):
         bnd = np.searchsorted(fr, np.arange(n_frames + 1))
         for f in range(n_frames):
             clouds[f] = pts[bnd[f]:bnd[f + 1], 1:]     # drop frame col -> 10 cols
-    print(f"  loaded cache {path}: {len(pts)} pts, {n_frames} frames, "
+    print(f"  loaded cache {path}: {len(pts)} pts, {n_frames} frames"
+          f"{f' ({pre_roll} pre-roll)' if pre_roll else ''}, "
           f"stored to {store_db:.0f} dB / conf {store_conf:.0f} dB  ({cal_label})")
     if DET_DB > store_db + 1e-6:
         print(f"  !! DET_DB={DET_DB:.0f} is looser than the {store_db:.0f} dB stored -- "
@@ -603,18 +665,23 @@ def load_cache(path):
     if MIN_CONF_DB < store_conf - 1e-6:
         print(f"  !! MIN_CONF_DB={MIN_CONF_DB:.0f} is below the {store_conf:.0f} dB conf "
               f"floor the cache was built with; reprocess the .bin to go lower.")
-    return clouds, cal_label
+    return clouds, cal_label, pre_roll
 
 
 
-def render(clouds, cal_label, out):
+def render(clouds, cal_label, out, pre_roll=0, half_w=0):
     """Side-by-side, synchronized: LEFT = 3D perspective (orientation B), RIGHT =
     top-down (x vs y). Points are trimmed to DET_DB at render time and colored by
-    COLOR_BY ('intensity' or 'doppler'). Both panels share the frame index."""
+    COLOR_BY ('intensity' or 'doppler'). Both panels share the frame index.
+    pre_roll : leading clouds that are window lead-in only, not rendered as frames.
+    half_w   : sliding-window half-width; each output frame unions +/-half_w frames
+               around it (0 = single frame, i.e. the original behavior)."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     from matplotlib.animation import FuncAnimation, PillowWriter, FFMpegWriter
+
+    n_out = len(clouds) - pre_roll        # rendered frames (pre-roll is window feed only)
 
     doppler = (COLOR_BY == "doppler")
     if doppler:
@@ -662,7 +729,7 @@ def render(clouds, cal_label, out):
     sup = fig.suptitle("")
 
     def update(i):
-        p = trim(clouds[i], DET_DB, MIN_CONF_DB)
+        p = trim(aggregate(clouds, i, pre_roll, half_w), DET_DB, MIN_CONF_DB)
         if len(p):
             c = color_of(p)
             scat3._offsets3d = (p[:, 0], p[:, 1], p[:, 2])
@@ -678,11 +745,12 @@ def render(clouds, cal_label, out):
         if MIN_RANGE_M > 0 or MAX_RANGE_M is not None:
             lo = f"{MIN_RANGE_M:.1f}"; hi = "inf" if MAX_RANGE_M is None else f"{MAX_RANGE_M:.1f}"
             rg = f", range {lo}-{hi}m"
-        sup.set_text(f"frame {i + 1}/{len(clouds)}   {len(p)} pts   "
-                     f"({cal_label}, {COLOR_BY}, {DET_DB:.0f}dB / conf {MIN_CONF_DB:.0f}dB{rg})")
+        wg = f", win +/-{half_w}f" if half_w > 0 else ""
+        sup.set_text(f"frame {i + 1}/{n_out}   {len(p)} pts   "
+                     f"({cal_label}, {COLOR_BY}, {DET_DB:.0f}dB / conf {MIN_CONF_DB:.0f}dB{rg}{wg})")
         return scat3, scat2
 
-    anim = FuncAnimation(fig, update, frames=len(clouds), interval=1000.0 / FPS, blit=False)
+    anim = FuncAnimation(fig, update, frames=n_out, interval=1000.0 / FPS, blit=False)
     writer = None
     if out.lower().endswith(".mp4"):
         try:
@@ -791,28 +859,45 @@ def main():
     nobg = "--nobg" in sys.argv
     nocal = "--nocal" in sys.argv
     nocomp = "--nocomp" in sys.argv
+    if "--nowindow" in sys.argv:
+        window_on = False
+    elif "--window" in sys.argv:
+        window_on = True
+    else:
+        window_on = WINDOW_AGG
+    half_w = WINDOW_FRAMES if window_on else 0
 
     if src.lower().endswith(".npz"):
         # ---- replay from a saved point cache (no .bin needed) ----
         if nocomp:
             print("note: --nocomp has no effect on a cache -- the Doppler comp is applied "
                   "at build time, so it's already baked in. Reprocess the .bin to A/B it.")
-        clouds, cal_label = load_cache(src)
+        clouds, cal_label, pre_roll = load_cache(src)
+        if window_on and pre_roll < WINDOW_FRAMES:
+            print(f"note: temporal window +/-{WINDOW_FRAMES}f requested but the cache stored "
+                  f"only {pre_roll} pre-roll frame(s) before TARGET_START -- the first "
+                  f"~{WINDOW_FRAMES} output frames look back {pre_roll} frame(s) then clamp. "
+                  f"Reprocess the .bin with --window (at this WINDOW_FRAMES) for a full lead-in.")
         out = str(args[1]) if len(args) > 1 else OUT
-        render(clouds, cal_label, out)
+        if window_on and out == OUT:
+            out = out[:-4] + f"_win{WINDOW_FRAMES}" + out[-4:]
+        render(clouds, cal_label, out, pre_roll=pre_roll, half_w=half_w)
     else:
         # ---- process the .bin: build clouds, save the cache, then render ----
-        clouds, cal_label = build(src, nobg=nobg, nocal=nocal, nocomp=nocomp)
-        # distinct names so an A/B (comp vs --nocomp) doesn't overwrite itself
-        tag = ".nocomp" if nocomp else ""
+        clouds, cal_label, pre_roll = build(src, nobg=nobg, nocal=nocal, nocomp=nocomp,
+                                            window=window_on)
+        # distinct names so an A/B (comp vs --nocomp, window vs not) doesn't overwrite itself
+        tag = (".nocomp" if nocomp else "") + (f".win{WINDOW_FRAMES}" if window_on else "")
         cache_path = os.path.splitext(src)[0] + tag + ".cache.npz"
-        save_cache(clouds, cache_path, cal_label)
+        save_cache(clouds, cache_path, cal_label, pre_roll)
         out = OUT
         if nobg and out == "bgsub_3d.mp4":
             out = "raw_3d.mp4"
         if nocomp:
             out = out[:-4] + "_nocomp" + out[-4:]
-        render(clouds, cal_label, out)
+        if window_on:
+            out = out[:-4] + f"_win{WINDOW_FRAMES}" + out[-4:]
+        render(clouds, cal_label, out, pre_roll=pre_roll, half_w=half_w)
 
 
 if __name__ == "__main__":
