@@ -12,6 +12,8 @@ reference_48ch.npy file needed).
     python bgsub_3d.py capture.bin --nocomp     # TDM Doppler compensation OFF (A/B the effect)
     python bgsub_3d.py capture.bin --window     # sliding-window temporal point accumulation
     python bgsub_3d.py capture.cache.npz --window   # ...or sweep the window from a cache
+    python bgsub_3d.py capture.bin --elev       # board rotated 90deg: swap az<->el resolution
+    python bgsub_3d.py --selftest --elev        # check the math in the rotated geometry
     python bgsub_3d.py --selftest               # check the math, no file needed
 
 Processing the .bin detects every target point down to STORE_DB below the frame
@@ -27,7 +29,8 @@ CAL_FILE at a saved one to REUSE it on a recording that has no reflector -- see
 the RF-phase caveat printed when it loads.
 
 There are NO value flags to type. Everything tunable is a global in CONFIG below.
-The only command-line switches are: --nocal, --nobg, --nocomp, --window/--nowindow, --selftest.
+The only command-line switches are: --nocal, --nobg, --nocomp, --window/--nowindow,
+--elev/--noelev, --selftest.
 
 ----------------------------------------------------------------------------
 WHAT EACH TUNABLE MEANS  (all live in the CONFIG block right below)
@@ -143,10 +146,10 @@ V_MAX         = (NUM_LOOPS // 2) * V_PER_BIN             # ~+/-4.7 m/s unambiguo
 VEL_SIGN      = +1.0          # flip to -1.0 if approaching/receding come out swapped
 
 # ---- frame ranges (read off your range_over_frames.png stage map) ----
-BG_FRAMES    = (800, 1400)   # empty-scene frames -> background template
-TARGET_START = 1400           # first frame to build the cloud from (moving-target stage)
-CAL_FRAMES   = (1, 500)     # reflector-at-boresight frames; set None to disable cal
-CAL_RANGE_M  = 4.2            # where the reflector sat (m); None = auto-pick strongest
+BG_FRAMES    = (1050, 1350)   # empty-scene frames -> background template
+TARGET_START = 1500           # first frame to build the cloud from (moving-target stage)
+CAL_FRAMES   = (300, 600)     # reflector-at-boresight frames; set None to disable cal
+CAL_RANGE_M  = 4.4            # where the reflector sat (m); None = auto-pick strongest
 CAL_FILE     = None           # path to a saved <capture>.cal.npz to REUSE instead of
                               #   building from CAL_FRAMES (for recordings with no
                               #   reflector). See the RF-phase caveat where it loads.
@@ -156,19 +159,19 @@ CAL_FILE     = None           # path to a saved <capture>.cal.npz to REUSE inste
 STORE_DB       = 40.0         # build the point CACHE down to this many dB below peak
                               #   (stores extra weak points so DET_DB can be re-trimmed
                               #   later from the cache without reprocessing the .bin)
-DET_DB         = 30.0         # DISPLAY amplitude trim: keep points within this many dB
+DET_DB         = 20.0         # DISPLAY amplitude trim: keep points within this many dB
                               #   of the frame peak. Render-time -> instant from a cache.
 STORE_CONF_DB  = 3.0          # cache also keeps every point whose angle confidence is at
                               #   least this (a low floor, so MIN_CONF_DB can be swept
                               #   later from the cache without reprocessing the .bin)
-MIN_CONF_DB    = 10.0         # DISPLAY confidence trim: drop points whose angle isn't at
+MIN_CONF_DB    = 12.0         # DISPLAY confidence trim: drop points whose angle isn't at
                               #   least this sharp. Render-time now -> sweep it instantly.
                               #   ~10-12 is a sane floor; 8 barely filters on this grid.
 FLOOR_DB       = 6.0          # skip a frame unless its peak is this far over residual
 GATE_DROP_DB   = 30.0         # --nobg only: keep frames within this dB of loudest frame
 
 # ---- range gate (render-time spatial trim; OFF by default so it changes nothing) ----
-MIN_RANGE_M  = 1            # drop points closer than this (m). 0 = no near limit.
+MIN_RANGE_M  = 0.5            # drop points closer than this (m). 0 = no near limit.
 MAX_RANGE_M  = 6           # drop points farther than this (m). None = no far limit.
                               #   e.g. set MAX_RANGE_M = 5.0 to cut everything past 5 m.
                               #   Range is stored per point, so this is a render-time
@@ -176,12 +179,12 @@ MAX_RANGE_M  = 6           # drop points farther than this (m). None = no far li
                               #   no reprocessing, no points lost from the cache.
 
 # ---- temporal aggregation (sliding window; render-time, OFF by default) ----
-WINDOW_AGG    = False  # True -> each output frame shows the UNION of the detected points
+WINDOW_AGG    = True  # True -> each output frame shows the UNION of the detected points
                        #   from a sliding window of frames centered on it (temporal
                        #   accumulation -> denser cloud). The movie keeps the SAME output
                        #   frames (TARGET_START..end); only point density changes. Toggle
                        #   per-run with --window / --nowindow (flags override this).
-WINDOW_FRAMES = 10     # half-width: aggregate this many frames BEFORE and AFTER each frame
+WINDOW_FRAMES = 3     # half-width: aggregate this many frames BEFORE and AFTER each frame
                        #   (2*WINDOW_FRAMES+1 frames per output frame). RENDER-TIME knob --
                        #   sweep it instantly from a cache, up to the pre-roll depth the
                        #   cache was built with (see below).
@@ -197,8 +200,24 @@ WINDOW_FRAMES = 10     # half-width: aggregate this many frames BEFORE and AFTER
 
 # ---- angle search field-of-view / resolution ----
 AZ_SIGN  = +1.0               # flip to -1.0 if targets come out mirrored left/right
-FOV_AZ   = 60.0               # azimuth   search half-range (deg)
-FOV_EL   = 30.0               # elevation search half-range (deg)
+
+# ---- elevation mode (board rotated 90 deg CCW about boresight, viewed from behind) ----
+ELEV_MODE = False             # True (or --elev): the physical board is rotated 90 deg about
+                              #   the boresight axis. The big azimuth ULA then becomes the
+                              #   ELEVATION aperture (fine el) and the single lifted TX becomes
+                              #   the AZIMUTH baseline (coarse az). This is a TRADE, not a free
+                              #   win: elevation resolution improves, azimuth resolution drops.
+                              #   Implemented by rotating the ARRAY MANIFOLD (not the output
+                              #   points): az/el and to_xyz stay in the world frame, so all
+                              #   three view panels remain correct and NO point-cloud shift is
+                              #   needed. Toggle per-run with --elev / --noelev.
+ELEV_SIGN = +1.0              # +1.0 = 90 deg CCW (x,z)->(-z,+x). Flip to -1.0 if the rotated
+                              #   view comes out upside-down (i.e. the +90/-90 ambiguity) --
+                              #   confirm on real data with a target of known height, don't
+                              #   assume. (Analogous to AZ_SIGN for the left/right mirror.)
+
+FOV_AZ   = 75.0               # azimuth   search half-range (deg)
+FOV_EL   = 10.0               # elevation search half-range (deg)
 AZ_STEP  = 0.5                # azimuth grid step (deg)
 EL_STEP  = 1.0                # elevation grid step (deg)
 
@@ -221,7 +240,7 @@ COLOR_BY  = "intensity"       # "intensity" (viridis, dB) or "doppler" (divergin
 #   you can switch this and re-render instantly (from the .bin OR a cache).
 
 # ---- figure ----
-FIG_SIZE   = (18, 8)          # bigger canvas (was 15x7)
+FIG_SIZE   = (22, 7)          # canvas for the 3-panel layout (3D | x-z | x-y)
 POINT_SIZE = 6               # scatter marker size (smaller = less fat; was 20)
 
 # ---- output ----
@@ -239,6 +258,24 @@ TX_POS = np.array([
     [15, 0.0],    # slot 5  Dev2.TX2
 ], dtype=float)
 RX_X = np.array([0, 1, 2, 3, 19, 20, 21, 22], dtype=float)   # half-lambda
+
+# ---- LAYOUT-vs-RF wavelength normalization (fixes a ~2% angular SCALE error) ----
+#   TX_POS / RX_X above are FIXED MILLIMETER spacings written as multiples of the board's
+#   LAYOUT design wavelength (lambda_layout) -- NOT of the current chirp. The steering phase
+#   2*pi*(u*x + w*z) needs the positions in multiples of the CURRENT RF wavelength (LAMBDA,
+#   the ADC-window-center value defined above). Those two wavelengths differ, so every
+#   coordinate must be multiplied by GEOMETRY_SCALE = lambda_layout / lambda_rf.
+#
+#   Omitting it makes the beamformer return  sin(theta_est) = GEOMETRY_SCALE * sin(theta_true)
+#   -- a systematic angular scale error (~2% here; zero at boresight, growing with angle).
+#   NOTE this is invisible to two things people trust: a boresight calibration reflector
+#   (zero phase slope at boresight regardless of scale) and the synthetic self-test (it
+#   generates AND recovers with the same _XLAM/_ZLAM, so a common scale cancels).
+#
+#   LAMBDA_LAYOUT comes from a fixed TI-drawing dimension -- CONFIRM it against your layout;
+#   the whole size of the correction depends on it. Here: 2*lambda_layout = 7.837 mm.
+LAMBDA_LAYOUT  = 7.837e-3 / 2.0                  # 3.9185 mm  (layout design wavelength, ~76.5 GHz)
+GEOMETRY_SCALE = LAMBDA_LAYOUT / LAMBDA           # ~1.0214 for this waveform (LAMBDA = lambda_rf)
 
 # ============================================================
 # RANGE AXIS
@@ -311,24 +348,62 @@ def detect(mag, db_below_peak, min_range_bin=4, max_targets=300):
 #   No zero-filling, no FFT-grid quantization. Returns a confidence (peak-to-median
 #   sharpness in dB) so noise-only cells -- where no angle matches -- get dropped.
 # ============================================================
-# real element positions in lambda, one per (tx, rx) virtual channel
-_xs, _zs = [], []
-for _tx in range(NUM_TX):
-    for _rx in range(NUM_RX):
-        _xs.append((TX_POS[_tx, 0] + RX_X[_rx]) * 0.5)   # half-lambda cols -> lambda
-        _zs.append(TX_POS[_tx, 1])                       # already in lambda
-_xs = np.asarray(_xs)
-_zs = np.asarray(_zs)                                    # (48,)
+# the search grid and steering dictionary are built by configure_geometry() below,
+# because elevation mode changes BOTH (it swaps which angle is the fine axis).
 
-# precompute the steering dictionary ONCE (grid is fixed)
-_az = np.arange(-FOV_AZ, FOV_AZ + AZ_STEP, AZ_STEP)
-_el = np.arange(-FOV_EL, FOV_EL + EL_STEP, EL_STEP)
-_AZ, _EL = np.meshgrid(np.radians(_az), np.radians(_el), indexing="ij")
-_u = AZ_SIGN * np.sin(_AZ) * np.cos(_EL)
-_w = np.sin(_EL)
-_phase = 2 * np.pi * (_u[..., None] * _xs[None, None, :] +
-                      _w[..., None] * _zs[None, None, :])
-_STEER_C = np.conj(np.exp(1j * _phase)).reshape(-1, _xs.size)   # (ngrid, 48)
+
+def _base_element_positions():
+    """Per-(tx, rx) virtual-element positions in lambda for the UNROTATED board:
+    x = azimuth (0..18.5 lambda ULA), z = elevation (0 except the +0.8 lambda lifted TX).
+    Positions are rescaled by GEOMETRY_SCALE so they are in CURRENT-RF-wavelength units,
+    not layout-wavelength units (see the note by LAMBDA_LAYOUT)."""
+    xs = np.empty((NUM_TX, NUM_RX))
+    zs = np.empty((NUM_TX, NUM_RX))
+    for tx in range(NUM_TX):
+        for rx in range(NUM_RX):
+            xs[tx, rx] = (TX_POS[tx, 0] + RX_X[rx]) * 0.5 * GEOMETRY_SCALE  # ->lambda_rf
+            zs[tx, rx] = TX_POS[tx, 1] * GEOMETRY_SCALE                      # ->lambda_rf
+    return xs, zs
+
+
+def configure_geometry(elev_mode):
+    """Build the search grid AND the steering dictionary for the current board
+    orientation. Sets the module globals used downstream: the grid (_az/_el/_AZ/_EL),
+    the element positions (_XLAM/_ZLAM per-(tx,rx), _xs/_zs flattened), and _STEER_C.
+
+    Elevation mode does two coupled things, both handled here so the caller never has
+    to touch a constant:
+      1. Rotates the array 90 deg about boresight -- (x, z) -> (-z, +x) -- so the big
+         18.5-lambda ULA moves onto elevation and the lifted TX onto azimuth.
+      2. Swaps the search grid to follow that: the FINE axis (now elevation) inherits
+         FOV_AZ/AZ_STEP, the COARSE axis (now azimuth) inherits FOV_EL/EL_STEP. Your
+         az/el tunings just ride along with the resolution -- no new numbers, and the
+         coarse azimuth stays inside FOV_EL (30 deg < the 0.8-lambda unambiguous ~39 deg)."""
+    global _az, _el, _AZ, _EL, _XLAM, _ZLAM, _xs, _zs, _STEER_C
+
+    if elev_mode:
+        fov_az, az_step, fov_el, el_step = FOV_EL, EL_STEP, FOV_AZ, AZ_STEP
+    else:
+        fov_az, az_step, fov_el, el_step = FOV_AZ, AZ_STEP, FOV_EL, EL_STEP
+    _az = np.arange(-fov_az, fov_az + az_step, az_step)
+    _el = np.arange(-fov_el, fov_el + el_step, el_step)
+    _AZ, _EL = np.meshgrid(np.radians(_az), np.radians(_el), indexing="ij")
+
+    xs, zs = _base_element_positions()
+    if elev_mode:
+        xs, zs = (-ELEV_SIGN * zs), (ELEV_SIGN * xs)   # 90 deg CCW about boresight
+    _XLAM, _ZLAM = xs, zs
+    _xs, _zs = xs.reshape(-1), zs.reshape(-1)           # (48,)
+
+    _u = AZ_SIGN * np.sin(_AZ) * np.cos(_EL)
+    _w = np.sin(_EL)
+    _phase = 2 * np.pi * (_u[..., None] * _xs[None, None, :] +
+                          _w[..., None] * _zs[None, None, :])
+    _STEER_C = np.conj(np.exp(1j * _phase)).reshape(-1, _xs.size)   # (ngrid, 48)
+
+
+# build once at import for the ELEV_MODE default; main() rebuilds if --elev/--noelev overrides
+configure_geometry(ELEV_MODE)
 
 
 def estimate_angles_search(snap):
@@ -558,7 +633,8 @@ def build(path, nobg, nocal, nocomp=False, window=False):
         cal = build_calibration(mm, starts, CAL_FRAMES, CAL_RANGE_M, n_frames)
         if cal is not None:
             save_calibration(cal, os.path.splitext(path)[0] + ".cal.npz")
-    cal_label = ("cal" if cal is not None else "no cal") + (", NO COMP" if nocomp else ", comp")
+    cal_label = (("cal" if cal is not None else "no cal") + (", NO COMP" if nocomp else ", comp")
+                 + (", ELEV" if ELEV_MODE else ""))
     if nocomp:
         print("TDM Doppler compensation OFF (--nocomp) -- A/B mode, expect moving "
               "targets to smear/hop in angle")
@@ -670,9 +746,10 @@ def load_cache(path):
 
 
 def render(clouds, cal_label, out, pre_roll=0, half_w=0):
-    """Side-by-side, synchronized: LEFT = 3D perspective (orientation B), RIGHT =
-    top-down (x vs y). Points are trimmed to DET_DB at render time and colored by
-    COLOR_BY ('intensity' or 'doppler'). Both panels share the frame index.
+    """Three synchronized panels sharing the frame index: LEFT = 3D perspective
+    (orientation B), MIDDLE = front view (x-z, looking down boresight), RIGHT =
+    top-down (x-y). Points are trimmed to DET_DB at render time and colored by
+    COLOR_BY ('intensity' or 'doppler').
     pre_roll : leading clouds that are window lead-in only, not rendered as frames.
     half_w   : sliding-window half-width; each output frame unions +/-half_w frames
                around it (0 = single frame, i.e. the original behavior)."""
@@ -696,9 +773,13 @@ def render(clouds, cal_label, out, pre_roll=0, half_w=0):
         return p[:, 4] if doppler else 20 * np.log10(p[:, 3] + 1e-6)
 
     fig = plt.figure(figsize=FIG_SIZE)
+    # 3 panels in a row: 3D | front (x-z) | top-down (x-y). The 3D panel gets more
+    # width (it isn't square); the two 2D panels are equal-aspect so they render as
+    # squares and don't need the extra room.
+    gs = fig.add_gridspec(1, 3, width_ratios=[1.4, 1, 1])
 
     # ---- LEFT: 3D perspective view ----
-    ax3 = fig.add_subplot(121, projection="3d")
+    ax3 = fig.add_subplot(gs[0], projection="3d")
     scat3 = ax3.scatter([0], [0], [0], c=[vmin], cmap=cmap,
                         vmin=vmin, vmax=vmax, s=POINT_SIZE, depthshade=False)
     ax3.set_xlim(-XLIM, XLIM); ax3.set_ylim(0, YMAX); ax3.set_zlim(-ZLIM, ZLIM)
@@ -714,8 +795,19 @@ def render(clouds, cal_label, out, pre_roll=0, half_w=0):
         ax3.set_xticklabels([])   # x is edge-on in a pure side view; labels just clutter
     ax3.set_title(f"perspective ({cal_label})")
 
-    # ---- RIGHT: top-down (bird's eye) ----
-    ax2 = fig.add_subplot(122)
+    # ---- MIDDLE: front view (x-z), looking down boresight; x across, z up ----
+    ax_xz = fig.add_subplot(gs[1])
+    scat_xz = ax_xz.scatter([0], [0], c=[vmin], cmap=cmap,
+                            vmin=vmin, vmax=vmax, s=POINT_SIZE)
+    ax_xz.set_xlim(-XLIM, XLIM); ax_xz.set_ylim(-ZLIM, ZLIM)
+    ax_xz.set_xlabel("x  left-right (m)")
+    ax_xz.set_ylabel("z  up-down (m)")
+    ax_xz.set_aspect("equal", adjustable="box")
+    ax_xz.grid(alpha=0.25)
+    ax_xz.set_title("front (x-z)")
+
+    # ---- RIGHT: top-down (bird's eye), x across, y forward ----
+    ax2 = fig.add_subplot(gs[2])
     scat2 = ax2.scatter([0], [0], c=[vmin], cmap=cmap,
                         vmin=vmin, vmax=vmax, s=POINT_SIZE)
     ax2.set_xlim(-XLIM, XLIM); ax2.set_ylim(0, YMAX)
@@ -723,9 +815,9 @@ def render(clouds, cal_label, out, pre_roll=0, half_w=0):
     ax2.set_ylabel("y  forward (m)")
     ax2.set_aspect("equal", adjustable="box")
     ax2.grid(alpha=0.25)
-    ax2.set_title("top down")
+    ax2.set_title("top down (x-y)")
 
-    fig.colorbar(scat2, ax=[ax3, ax2], label=clabel, shrink=0.6)
+    fig.colorbar(scat2, ax=[ax3, ax_xz, ax2], label=clabel, shrink=0.6)
     sup = fig.suptitle("")
 
     def update(i):
@@ -734,11 +826,15 @@ def render(clouds, cal_label, out, pre_roll=0, half_w=0):
             c = color_of(p)
             scat3._offsets3d = (p[:, 0], p[:, 1], p[:, 2])
             scat3.set_array(c)
+            scat_xz.set_offsets(np.column_stack((p[:, 0], p[:, 2])))
+            scat_xz.set_array(c)
             scat2.set_offsets(np.column_stack((p[:, 0], p[:, 1])))
             scat2.set_array(c)
         else:
             scat3._offsets3d = ([], [], [])
             scat3.set_array(np.array([]))
+            scat_xz.set_offsets(np.empty((0, 2)))
+            scat_xz.set_array(np.array([]))
             scat2.set_offsets(np.empty((0, 2)))
             scat2.set_array(np.array([]))
         rg = ""
@@ -748,7 +844,7 @@ def render(clouds, cal_label, out, pre_roll=0, half_w=0):
         wg = f", win +/-{half_w}f" if half_w > 0 else ""
         sup.set_text(f"frame {i + 1}/{n_out}   {len(p)} pts   "
                      f"({cal_label}, {COLOR_BY}, {DET_DB:.0f}dB / conf {MIN_CONF_DB:.0f}dB{rg}{wg})")
-        return scat3, scat2
+        return scat3, scat_xz, scat2
 
     anim = FuncAnimation(fig, update, frames=n_out, interval=1000.0 / FPS, blit=False)
     writer = None
@@ -783,9 +879,11 @@ def _synth_cube(R_m, az_deg, el_deg, vel_ms=0.0, snr_db=30):
     range_sig = np.exp(2j * np.pi * f_beat * n / ADC_RATE)   # beat tone -> range bin
     f_d = 2.0 * vel_ms / LAMBDA                              # Doppler frequency (Hz)
 
-    # angle phase per (tx, rx) virtual element -- matches the steering convention
-    x_lam = (TX_POS[:, 0][:, None] + RX_X[None, :]) * 0.5         # (tx, rx), lambda
-    z_lam = np.repeat(TX_POS[:, 1][:, None], NUM_RX, axis=1)      # (tx, rx), lambda
+    # angle phase per (tx, rx) virtual element -- uses the SAME configured geometry
+    # as the search (rotated when ELEV_MODE) so the self-test validates the manifold
+    # actually in use, not just the unrotated board.
+    x_lam = _XLAM                                                # (tx, rx), lambda
+    z_lam = _ZLAM                                                # (tx, rx), lambda
     ang = 2 * np.pi * (AZ_SIGN * x_lam * np.sin(az) * np.cos(el) +
                        z_lam * np.sin(el))                       # (tx, rx)
 
@@ -813,28 +911,38 @@ def _recover(pts):
 
 def selftest():
     ok_all = True
-    print(f"velocity per doppler bin = {V_PER_BIN:.3f} m/s, unambiguous +/-{V_MAX:.2f} m/s\n")
+    print(f"velocity per doppler bin = {V_PER_BIN:.3f} m/s, unambiguous +/-{V_MAX:.2f} m/s")
+    # Put the tightly-checked angle on whichever axis the CURRENT geometry resolves
+    # well: azimuth for the normal board, elevation once ELEV_MODE has rotated it.
+    # The coarse axis (single 0.8-lambda baseline) gets a loose tolerance -- a wide
+    # peak there is expected physics, not a bug.
+    if ELEV_MODE:
+        AZ_T, EL_T, AZ_TOL, EL_TOL = 5.0, 20.0, 12.0, 3.0
+        print("geometry: ELEVATION mode (board rotated 90 deg) -- elevation is the fine axis\n")
+    else:
+        AZ_T, EL_T, AZ_TOL, EL_TOL = 20.0, 8.0, 2.0, 3.0
+        print("geometry: azimuth mode -- azimuth is the fine axis\n")
 
     # (A) STATIC target: compensation is a no-op here (k=0) -> checks geometry only.
-    print("self-test A: STATIC target   R=6.0 m  az=+20  el=+8")
-    pts = cloud(_synth_cube(6.0, 20.0, 8.0, vel_ms=0.0), cal=None, store_db=STORE_DB, gate=0.0)
+    print(f"self-test A: STATIC target   R=6.0 m  az={AZ_T:+.0f}  el={EL_T:+.0f}")
+    pts = cloud(_synth_cube(6.0, AZ_T, EL_T, vel_ms=0.0), cal=None, store_db=STORE_DB, gate=0.0)
     if len(pts) == 0:
         print("  RESULT: CHECK  (no points detected)"); return False
     R, az, el = _recover(pts)
     print(f"  recovered  R={R:5.2f} m   az={az:+6.2f}   el={el:+6.2f}")
-    okA = abs(R - 6.0) < 0.15 and abs(az - 20) < 2.0 and abs(el - 8) < 3.0
+    okA = abs(R - 6.0) < 0.15 and abs(az - AZ_T) < AZ_TOL and abs(el - EL_T) < EL_TOL
     print("  RESULT:", "PASS" if okA else "CHECK"); ok_all &= okA
 
-    # (B) MOVING target at the SAME angle: the TDM Doppler comp must hold az/el at
-    #     20/8. Delete the comp block in cloud() and THIS is the test that fails.
-    print("\nself-test B: MOVING target   v=+4.5 m/s  R=6.0 m  az=+20  el=+8  (exercises TDM comp)")
-    pts = cloud(_synth_cube(6.0, 20.0, 8.0, vel_ms=4.5), cal=None, store_db=STORE_DB, gate=0.0)
+    # (B) MOVING target at the SAME angle: the TDM Doppler comp must hold az/el put.
+    #     Delete the comp block in cloud() and THIS is the test that fails.
+    print(f"\nself-test B: MOVING target   v=+4.5 m/s  R=6.0 m  az={AZ_T:+.0f}  el={EL_T:+.0f}  (exercises TDM comp)")
+    pts = cloud(_synth_cube(6.0, AZ_T, EL_T, vel_ms=4.5), cal=None, store_db=STORE_DB, gate=0.0)
     if len(pts) == 0:
         print("  RESULT: CHECK  (no points detected)"); return False
     R, az, el = _recover(pts)
     vbest = float(pts[np.argmax(pts[:, 3]), 4])
     print(f"  recovered  R={R:5.2f} m   az={az:+6.2f}   el={el:+6.2f}   v={vbest:+5.2f} m/s")
-    okB = abs(az - 20) < 2.0 and abs(el - 8) < 3.0
+    okB = abs(az - AZ_T) < AZ_TOL and abs(el - EL_T) < EL_TOL
     print("  RESULT:", "PASS" if okB else "CHECK  <-- if this fails, the TDM Doppler comp is missing/wrong")
     ok_all &= okB
 
@@ -848,6 +956,19 @@ def selftest():
 
 # ============================================================
 def main():
+    # ---- resolve elevation mode FIRST: it rebuilds the steering dictionary, so it
+    #      has to be settled before anything (incl. --selftest) touches the geometry ----
+    global ELEV_MODE
+    if "--noelev" in sys.argv:
+        ELEV_MODE = False
+    elif "--elev" in sys.argv:
+        ELEV_MODE = True
+    configure_geometry(ELEV_MODE)
+    if ELEV_MODE:
+        print(f"ELEVATION mode ON: array manifold rotated 90 deg about boresight "
+              f"(ELEV_SIGN={ELEV_SIGN:+.0f}). Big ULA -> elevation (fine), lifted TX -> "
+              f"azimuth (coarse). xyz stay in the world frame; no point-cloud shift.")
+
     if "--selftest" in sys.argv:
         selftest()
         return
@@ -879,15 +1000,19 @@ def main():
                   f"~{WINDOW_FRAMES} output frames look back {pre_roll} frame(s) then clamp. "
                   f"Reprocess the .bin with --window (at this WINDOW_FRAMES) for a full lead-in.")
         out = str(args[1]) if len(args) > 1 else OUT
-        if window_on and out == OUT:
-            out = out[:-4] + f"_win{WINDOW_FRAMES}" + out[-4:]
+        if out == OUT:
+            if window_on:
+                out = out[:-4] + f"_win{WINDOW_FRAMES}" + out[-4:]
+            if ELEV_MODE:
+                out = out[:-4] + "_elev" + out[-4:]
         render(clouds, cal_label, out, pre_roll=pre_roll, half_w=half_w)
     else:
         # ---- process the .bin: build clouds, save the cache, then render ----
         clouds, cal_label, pre_roll = build(src, nobg=nobg, nocal=nocal, nocomp=nocomp,
                                             window=window_on)
-        # distinct names so an A/B (comp vs --nocomp, window vs not) doesn't overwrite itself
-        tag = (".nocomp" if nocomp else "") + (f".win{WINDOW_FRAMES}" if window_on else "")
+        # distinct names so an A/B (comp vs --nocomp, window vs not, elev vs not) doesn't overwrite itself
+        tag = ((".nocomp" if nocomp else "") + (f".win{WINDOW_FRAMES}" if window_on else "")
+               + (".elev" if ELEV_MODE else ""))
         cache_path = os.path.splitext(src)[0] + tag + ".cache.npz"
         save_cache(clouds, cache_path, cal_label, pre_roll)
         out = OUT
@@ -897,6 +1022,8 @@ def main():
             out = out[:-4] + "_nocomp" + out[-4:]
         if window_on:
             out = out[:-4] + f"_win{WINDOW_FRAMES}" + out[-4:]
+        if ELEV_MODE:
+            out = out[:-4] + "_elev" + out[-4:]
         render(clouds, cal_label, out, pre_roll=pre_roll, half_w=half_w)
 
 
