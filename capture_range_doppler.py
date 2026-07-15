@@ -37,7 +37,7 @@ NUM_LOOPS         = 64
 CHIRPS_PER_FRAME  = NUM_LOOPS * NUM_TX          # 384
 
 EXPECTED_DT_MS = 50.0      # fast rate (20 fps)
-RUN_SECONDS    = 60
+RUN_SECONDS    = 1000
 OUT_DIR        = "."
 
 # ---- chirp block format (must match firmware) ----
@@ -58,7 +58,7 @@ CMD_START_RECORD, CMD_STOP_RECORD = 0x05, 0x06
 FILE_BUF_BYTES = 1 << 22   # 4 MB file buffer
 
 # ---- live display (separate process) ----
-DISPLAY_PERIOD = 1.0      # seconds between redraws (slow on purpose)
+DISPLAY_PERIOD = 1      # seconds between redraws (slow on purpose)
 DISPLAY_LOOPS  = 16        # loops read per redraw -> 16*6 = 96 chirps (~0.8 MB)
 DYN_RANGE_DB   = 40        # color span below the peak, dB
 LAYOUT_B       = False     # int16 interleave guess: flip to True if range looks wrong
@@ -66,8 +66,8 @@ LAYOUT_B       = False     # int16 interleave guess: flip to True if range looks
 # ---- axis calibration (from rlProfileCfg) ----
 C_LIGHT         = 299792458.0
 ADC_RATE_KSPS   = 10000.0   # digOutSampleRate
-SLOPE_MHZ_US    = 75.03     # freqSlopeConst = 1554
-START_FREQ_GHZ  = 77.0      # startFreqConst
+SLOPE_MHZ_US    = 75.03*2     # freqSlopeConst = 3108
+START_FREQ_GHZ  = 76.0      # startFreqConst
 CHIRP_PERIOD_US = 35.0      # idleTime (7) + rampEndTime (28)
 
 
