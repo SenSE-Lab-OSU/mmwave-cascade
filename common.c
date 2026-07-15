@@ -158,8 +158,8 @@ rlRfPhaseShiftCfg_t phaseShifChirpCfgDev1[NUM_OF_PHASE_SHIFT_CHIRPS] =
         .chirpStartIdx = 0,
         .chirpEndIdx   = 0,
         .tx0PhaseShift = 0,
-        .tx1PhaseShift = (56 << 2),
-        .tx2PhaseShift = (48 << 2),
+        .tx1PhaseShift = 0,
+        .tx2PhaseShift = 0,
         .reserved      = 0
     }
 };
@@ -169,9 +169,9 @@ rlRfPhaseShiftCfg_t phaseShifChirpCfgDev2[NUM_OF_PHASE_SHIFT_CHIRPS] =
     {
         .chirpStartIdx = 0,
         .chirpEndIdx   = 0,
-        .tx0PhaseShift = (40 << 2),
-        .tx1PhaseShift = (32 << 2),
-        .tx2PhaseShift = (24 << 2),
+        .tx0PhaseShift = 0,
+        .tx1PhaseShift = 0,
+        .tx2PhaseShift = 0,
         .reserved      = 0
     }
 };
@@ -204,7 +204,7 @@ static void Mmwave_populateDefaultProfileCfg (rlProfileCfg_t* ptrProfileCfg)
 
     /* Populate the *default* profile configuration: */
     ptrProfileCfg->profileId             = 0;
-    ptrProfileCfg->startFreqConst        = (uint32_t) ((float)77 * (1U << 26) / 3.6); //76F
+    ptrProfileCfg->startFreqConst        = (uint32_t) ((float)76 * (1U << 26) / 3.6); //76F
     ptrProfileCfg->idleTimeConst         = 7 * 1000 / 10; //7 us
     ptrProfileCfg->adcStartTimeConst     = 1.5 * 1000 / 10; // 1.5 us
     ptrProfileCfg->rampEndTime           = 2800U; //28 us;
@@ -213,7 +213,7 @@ static void Mmwave_populateDefaultProfileCfg (rlProfileCfg_t* ptrProfileCfg)
     ptrProfileCfg->txOutPowerBackoffCode = 0;
     ptrProfileCfg->txPhaseShifter        = 0;
     // ptrProfileCfg->freqSlopeConst        = 11 * 1000 / 48;
-    ptrProfileCfg->freqSlopeConst        = 1554; //75.03 MHz/us
+    ptrProfileCfg->freqSlopeConst        = 3108; //150.06 MHz/us
     // ptrProfileCfg->freqSlopeConst        = 1657; //80 MHz/us
     ptrProfileCfg->txStartTime           = 0 * 1000 / 10;
     ptrProfileCfg->numAdcSamples         = TEST_NUM_ADC_SAMPLES;
@@ -946,4 +946,3 @@ void Mmwave_ctrlTask(void* args)
             test_print ("Error: mmWave control execution failed [Error code %d]\n", errCode);
     }
 }
-
