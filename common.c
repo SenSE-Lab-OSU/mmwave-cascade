@@ -1,4 +1,39 @@
 /*
+ * =========================================================================
+ *  TDM SCHEME SELECTOR   --   search this file for the tag [TDM-B]
+ * =========================================================================
+ *
+ *  Scheme A (ACTIVE, original): interleaved TDM
+ *      order   TX1 TX2 TX3 TX4 TX5 TX6, repeated for 64 loops = 384 chirps
+ *      Tc = 7 us idle + 28 us ramp = 35 us
+ *      -> 13.44 ms of chirping at the head of each 50 ms frame
+ *      -> per-TX slow-time spacing 210 us, all inside that 13.44 ms burst
+ *
+ *  Scheme B (COMMENTED OUT): block TDM, one 64-chirp block per TX,
+ *      blocks spread over the frame by stretching the profile idle time
+ *      order   TX1 x64, TX2 x64, TX3 x64, TX4 x64, TX5 x64, TX6 x64
+ *      Tc = 97 us idle + 28 us ramp = 125 us
+ *      -> 48.0 ms active + 2.0 ms interframe gap
+ *      -> block length 8 ms, block centres at ~4/12/20/28/36/44 ms
+ *      -> 6 phase measurements per frame, 8 ms apart (125 Hz)
+ *
+ *  To switch A -> B, edit exactly these lines:
+ *      COMMENT   line 254                (idleTimeConst = 7 us)
+ *      UNCOMMENT line 257                (idleTimeConst = 97 us)
+ *      COMMENT   lines 589 and 590       (chirpCfg.chirp{Start,End}Idx = numChirps)
+ *      UNCOMMENT lines 594 and 595       (chirpCfg.chirp{Start,End}Idx = loopIndex * 64 ...)
+ *      COMMENT   lines 690 and 691       (frameCfg.chirpEndIdx = 5, numLoops = 64)
+ *      UNCOMMENT lines 694 and 695       (frameCfg.chirpEndIdx = 383, numLoops = 1)
+ *
+ *  Unchanged in Scheme B: 384 chirps x 256 samples x 8 RX per frame, 50 ms
+ *  frame period, 150.06 MHz/us slope, 28 us ramp.  DCA1000 frame size and
+ *  .bin layout are byte-identical; only the chirp-index -> TX mapping changes,
+ *  so the host-side reshape goes from [loop][tx][...] to [tx][loop][...].
+ *
+ * =========================================================================
+ */
+
+/*
  *   @file  common_full.c
  *
  *   @brief
@@ -206,6 +241,9 @@ static void Mmwave_populateDefaultProfileCfg (rlProfileCfg_t* ptrProfileCfg)
     ptrProfileCfg->profileId             = 0;
     ptrProfileCfg->startFreqConst        = (uint32_t) ((float)76 * (1U << 26) / 3.6); //76F
     ptrProfileCfg->idleTimeConst         = 7 * 1000 / 10; //7 us
+    /* [TDM-B] idle time stretched so 384 chirps fill the 50 ms frame:
+       Tc = idle + rampEnd = 97 + 28 = 125 us; 384 * 125 us = 48.0 ms active, 2.0 ms interframe gap */
+    // ptrProfileCfg->idleTimeConst         = 97 * 1000 / 10; //97 us
     ptrProfileCfg->adcStartTimeConst     = 1.5 * 1000 / 10; // 1.5 us
     ptrProfileCfg->rampEndTime           = 2800U; //28 us;
     // ptrProfileCfg->rampEndTime           = 5400U; //54 us;
@@ -539,6 +577,14 @@ void Mmwave_populateDefaultChirpControlCfg (MMWave_CtrlCfg* ptrCtrlCfg)
             /* Override the chirp configuration: */
             chirpCfg.chirpStartIdx   = numChirps;
             chirpCfg.chirpEndIdx     = numChirps;
+
+            /* [TDM-B] one ranged chirp cfg per TX: cfg i covers chirp RAM indices
+               [i*64 , i*64+63], so the frame emits 64 chirps of TX_i back to back.
+               Comment out the two chirpStartIdx/chirpEndIdx lines above when using these. */
+
+            // chirpCfg.chirpStartIdx   = loopIndex * TEST_NUM_LOOPS;
+            // chirpCfg.chirpEndIdx     = loopIndex * TEST_NUM_LOOPS + (TEST_NUM_LOOPS - 1U);
+
             chirpCfg.profileId       = 0;
 
             CacheP_wb((void *)&chirpCfg, sizeof(rlChirpCfg_t), CacheP_TYPE_ALLD);
@@ -635,6 +681,12 @@ void Mmwave_populateDefaultChirpControlCfg (MMWave_CtrlCfg* ptrCtrlCfg)
         ptrCtrlCfg->u.frameCfg[devidx].frameCfg.chirpStartIdx      = 0;
         ptrCtrlCfg->u.frameCfg[devidx].frameCfg.chirpEndIdx        = TEST_CHIRP_END_INDEX;
         ptrCtrlCfg->u.frameCfg[devidx].frameCfg.numLoops           = TEST_NUM_LOOPS;
+        
+        /* [TDM-B] frame walks all 384 chirp RAM entries once instead of looping 6 x 64.
+           Comment out the two lines above when using these. */
+        // ptrCtrlCfg->u.frameCfg[devidx].frameCfg.chirpEndIdx        = (TEST_NUM_CHIRPS * TEST_NUM_LOOPS) - 1U; /* 383 */
+        // ptrCtrlCfg->u.frameCfg[devidx].frameCfg.numLoops           = 1U;
+
         ptrCtrlCfg->u.frameCfg[devidx].frameCfg.numFrames          = TEST_NUM_FRAMES;
         ptrCtrlCfg->u.frameCfg[devidx].frameCfg.numAdcSamples      = TEST_NUM_ADC_SAMPLES * 2 ;
         // ptrCtrlCfg->u.frameCfg[devidx].frameCfg.framePeriodicity   = 200 * 1000000 / 5;
