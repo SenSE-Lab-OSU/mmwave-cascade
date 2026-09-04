@@ -19,6 +19,7 @@ cd /d C:\ti\mmwave_studio_03_00_00_14\mmWaveStudio\PostProc
 
 echo Configuring DCA1000EVM FPGA...
 DCA1000EVM_CLI_Control.exe fpga AM273X_Capture.json
+DCA1000EVM_CLI_Control.exe record AM273X_Capture.json
 
 echo.
 echo Starting recording...

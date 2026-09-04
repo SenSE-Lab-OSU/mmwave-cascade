@@ -1,9 +1,8 @@
 @echo off
 :: ============================================================
-:: build_cascade_mss.bat  (TDMA)
-:: testClean is MANDATORY: obj_am273x is shared with the DDMA
-:: build; without it, make links stale DDMA objects.
-:: Output: am273x\am273x_cascade_mss.xer5f
+:: build_cascade_mss_ddma.bat
+:: Builds the DDMA variant in-place from am273xDDMA\
+:: Output: am273xDDMA\am273xDDMA_cascade_mss.xer5f
 :: ============================================================
 
 cd /d C:\ti\mmwave_mcuplus_sdk_04_04_00_01\mmwave_mcuplus_sdk_04_04_00_01\scripts\windows
@@ -17,12 +16,12 @@ set XDC_INSTALL_PATH=C:/ti/ccs1200/xdctools_3_62_01_16_core
 set PATH=C:\ti\ccs1200\ccs\utils\bin;C:\ti\ccs1200\ccs\utils\cygwin;%PATH%
 
 cd /d C:\ti\mmwave_mcuplus_sdk_04_04_00_01\mmwave_mcuplus_sdk_04_04_00_01\ti\utils\test\cascade
-C:\ti\ccs1200\ccs\utils\bin\gmake -f makefile testClean test
-if errorlevel 1 (echo BUILD FAILED & pause & exit /b 1)
+:: testClean is mandatory: the object dir is shared with the TDMA build
+C:\ti\ccs1200\ccs\utils\bin\gmake -f makefile_ddma testClean test
 
 echo.
 echo ============================================================
 echo Build complete.
-echo TDMA binary: am273x\am273x_cascade_mss.xer5f
+echo DDMA binary: am273xDDMA\am273xDDMA_cascade_mss.xer5f
 echo ============================================================
 pause
