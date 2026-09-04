@@ -1,0 +1,2409 @@
+******************************************************************************
+            TI ARM Clang Linker Unix v2.1.2                    
+******************************************************************************
+>> Linked Thu Mar 30 13:04:22 2023
+
+OUTPUT FILE NAME:   <am273x/am273x_cascade_mss.xer5f>
+ENTRY POINT SYMBOL: "_vectors"  address: 00000000
+
+
+MEMORY CONFIGURATION
+
+         name            origin    length      used     unused   attr    fill
+----------------------  --------  ---------  --------  --------  ----  --------
+  R5F_VECS              00000000   00000040  00000040  00000000  RWIX
+  R5F_TCMA              00000040   00003fc0  00000000  00003fc0  RWIX
+  R5F_TCMB              00080000   00004000  00000000  00004000  RWIX
+  SBL_RESERVED_L2_RAM   10200000   00020000  00000000  00020000  RW  
+  MSS_L2                10220000   000c8000  00080b08  000474f8  RWIX
+  HWA_RAM               82000000   00020000  00000000  00020000  RW  
+  DSS_L3                88000000   00390000  00006400  00389c00  RWIX
+  RTOS_NORTOS_IPC_SHM_M c5000000   00001f40  00000000  00001f40  RWIX
+
+
+SEGMENT ALLOCATION MAP
+
+run origin  load origin   length   init length attrs members
+----------  ----------- ---------- ----------- ----- -------
+00000000    00000000    00000040   00000040    r-x
+  00000000    00000000    00000040   00000040    r-x .vectors
+10220000    10220000    00058d00   00000000    rw-
+  10220000    10220000    00055d00   00000000    rw- .bss
+  10275d00    10275d00    00001000   00000000    rw- .sysmem
+  10276d00    10276d00    00002000   00000000    rw- .stack
+10278d00    10278d00    0001d0d0   0001d0d0    r-x
+  10278d00    10278d00    00016220   00016220    r-x .text
+  1028ef20    1028ef20    00006eb0   00006eb0    r-- .rodata
+10295e00    10295e00    00008a80   00008a80    rw-
+  10295e00    10295e00    00008a80   00008a80    rw- .data
+1029e880    1029e880    00000d78   00000d78    r-x
+  1029e880    1029e880    00000740   00000740    r-x .text.hwi
+  1029efc0    1029efc0    00000430   00000430    r-x .text.cache
+  1029f3f0    1029f3f0    00000208   00000208    r-x .text.mpu
+1029f600    1029f600    00001538   00000138    r-x
+  1029f600    1029f600    00000130   00000130    r-x .text.boot
+  1029f730    1029f730    00000008   00000008    r-x .text:abort
+  1029f738    1029f738    00000100   00000000    r-- .irqstack
+  1029f838    1029f838    00000100   00000000    r-- .fiqstack
+  1029f938    1029f938    00001000   00000000    r-- .svcstack
+  102a0938    102a0938    00000100   00000000    r-- .abortstack
+  102a0a38    102a0a38    00000100   00000000    r-- .undefinedstack
+88000000    88000000    00006400   00000000    rw-
+  88000000    88000000    00004000   00000000    rw- .l3ram
+  88004000    88004000    00002400   00000000    rw- .MCPILogBuffer
+
+
+SECTION ALLOCATION MAP
+
+ output                                  attributes/
+section   page    origin      length       input sections
+--------  ----  ----------  ----------   ----------------
+.vectors   0    00000000    00000040     
+                  00000000    00000040     freertos.am273x.r5f.ti-arm-clang.release.lib : HwiP_armv7r_vectors_freertos_asm.obj (.vectors)
+
+.bss       0    10220000    00055d00     UNINITIALIZED
+                  10220000    00020000     (.common:gAppTskStackMain)
+                  10240000    00020000     (.common:gCsiRxCfgTskStack)
+                  10260000    00010000     (.common:gMmwCtrlTskStack)
+                  10270000    00001008     (.common:gHwiCtrl)
+                  10271008    00001000     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.bss.uxIdleTaskStack)
+                  10272008    00001000     (.common:gReadBuf)
+                  10273008    00000038     (.common:gClockCtrl)
+                  10273040    00000800     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.bss.gBpmHeapMem)
+                  10273840    0000063c     ti_drivers_config.oer5f (.bss.gMibspiObjects)
+                  10273e7c    000004f4     (.common:gMMWave_MCB)
+                  10274370    00000400     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.bss.uxTimerTaskStack)
+                  10274770    00000400     (.common:gWriteBuf)
+                  10274b70    00000280                                                  : tasks.obj (.bss.pxReadyTasksLists)
+                  10274df0    00000238     ti_drivers_config.oer5f (.bss.gCsirxObjects)
+                  10275028    00000138     ti_drivers_config.oer5f (.bss.gEdmaObjects)
+                  10275160    00000130     (.common:gCSIRXState)
+                  10275290    00000120     libsysbm.a : trgmsg.c.obj (.bss:_CIOBUF_)
+                  102753b0    00000100     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.bss.prvCheckForValidListAndQueue.ucStaticTimerQueueStorage)
+                  102754b0    00000100     (.common:xQueueRegistry)
+                  102755b0    000000a0     (.common:__TI_tmpnams)
+                  10275650    000000a0     (.common:gTaskP_ctrl)
+                  102756f0    00000098                                                  : DebugP_freertos.obj (.bss.gDebugLogLockObj)
+                  10275788    0000008c                                                  : port.obj (.bss.xIdleTaskTCB)
+                  10275814    0000008c                                                  : port.obj (.bss.xTimerTaskTCB)
+                  102758a0    0000008c     (.common:gAppTaskObj)
+                  1027592c    0000008c     (.common:gCsiConfigTaskObj)
+                  102759b8    0000008c     (.common:gMmwCtrlTaskObj)
+                  10275a44    00000080     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.bss.gBpmHeapObj)
+                  10275ac4    00000080                                    : mmwave_fullcfg.oer5f (.bss.gMmwHeapObj)
+                  10275b44    00000080     (.common:gCbuffObject)
+                  10275bc4    00000050     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.bss.prvCheckForValidListAndQueue.xStaticTimerQueue)
+                  10275c14    00000050     (.common:gRovDummyQueue)
+                  10275c64    00000040     (.common:gGpioHwiObject)
+                  10275ca4    00000010     (.common:virtToPhymap)
+                  10275cb4    0000000c     (.common:gEdmaHandle)
+                  10275cc0    0000000c     (.common:gMibspiHandle)
+                  10275ccc    00000008     (.common:gCSIRXErrorCode)
+                  10275cd4    00000008     (.common:parmbuf)
+                  10275cdc    00000004                                                  : HwiP_armv7r_handlers_freertos.obj (.bss.gdummy)
+                  10275ce0    00000004                                                  : HwiP_armv7r_vim.obj (.bss.gdummy)
+                  10275ce4    00000004     libc.a : memory.c.obj (.bss.sys_free)
+                  10275ce8    00000004     (.common:gAppTask)
+                  10275cec    00000004     (.common:gCsiConfigTask)
+                  10275cf0    00000004     (.common:gMmwCtrlTask)
+                  10275cf4    0000000c     --HOLE--
+
+.sysmem    0    10275d00    00001000     UNINITIALIZED
+                  10275d00    00000010     libc.a : memory.c.obj (.sysmem)
+                  10275d10    00000ff0     --HOLE--
+
+.stack     0    10276d00    00002000     UNINITIALIZED
+                  10276d00    00000004     freertos.am273x.r5f.ti-arm-clang.release.lib : boot_armv7r_asm.obj (.stack)
+                  10276d04    00001ffc     --HOLE--
+
+.text      0    10278d00    00016220     
+                  10278d00    000015e2     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_configLink)
+                  1027a2e2    00000002     freertos.am273x.r5f.ti-arm-clang.release.lib : AddrTranslateP_null.obj (.text.AddrTranslateP_getLocalAddr)
+                  1027a2e4    00000de0     libc.a : _printfi.c.obj (.text:__TI_printfi_nofloat)
+                  1027b0c4    0000000c     drivers.am273x.r5f.ti-arm-clang.release.lib : gpio_v1.obj (.text.GPIO_getHighLowLevelPendingInterrupt)
+                  1027b0d0    00000ada     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.text.MMWave_openLink)
+                  1027bbaa    00000002     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_edma.obj (.text.MIBSPI_edmaDoNothing)
+                  1027bbac    00000700                                                 : mibspi_v0.obj (.text.MIBSPI_open)
+                  1027c2ac    00000004                                                 : cbuff_lvds.obj (.text.CBUFF_deinitLVDS)
+                  1027c2b0    000006d6     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverMsgRead)
+                  1027c986    0000000a     drivers.am273x.r5f.ti-arm-clang.release.lib : soc.obj (.text.SOC_getSelfCpuClk)
+                  1027c990    000005d6     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverCmdSendRetry)
+                  1027cf66    00000002     freertos.am273x.r5f.ti-arm-clang.release.lib : printf.obj (.text._out_null)
+                  1027cf68    000005a8                                                  : printf.obj (.text._vsnprintf)
+                  1027d510    0000049e     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_asyncEventHandler)
+                  1027d9ae    00000002     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.text.vPortConfigTimerForRunTimeStats)
+                  1027d9b0    00000408     cascade_csirx.oer5f (.text.MmwCascade_CSIConfig)
+                  1027ddb8    00000008     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_allocDmaChannel)
+                  1027ddc0    000003f4     common.oer5f (.text.Mmwave_populateDefaultChirpControlCfg)
+                  1027e1b4    0000000c     libc.a : aeabi_portable.c.obj (.text.__aeabi_errno_addr)
+                  1027e1c0    000003d4     main_mss.oer5f (.text.MmwCascade_mmWaveTest)
+                  1027e594    0000000c     libc.a : memory.c.obj (.text.malloc)
+                  1027e5a0    00000398     cascade_lvds_stream.oer5f (.text.Cascade_LVDSStream_EDMAInit)
+                  1027e938    00000390     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_edma.obj (.text.MIBSPI_edmaTransfer)
+                  1027ecc8    0000035c                                                 : csirx.obj (.text.CSIRX_commonSetConfig)
+                  1027f024    0000000c     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.vTaskMissedYield)
+                  1027f030    00000308     libmmwavelink_cascade_am273x.aer5f : rl_sensor.oer5f (.text.rlSetMultiBpmChirpConfig)
+                  1027f338    00000300     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_v0.obj (.text.MIBSPI_dataTransfer)
+                  1027f638    00000008                                                 : edma.obj (.text.EDMA_allocParam)
+                  1027f640    00000300     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverInit)
+                  1027f940    000002f0     cascade_lvds_stream.oer5f (.text.Cascade_LVDSStream_EDMAAllocateCBUFFSwChannel)
+                  1027fc30    000002ec     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_configureProfileChirp)
+                  1027ff1c    00000004     freertos.am273x.r5f.ti-arm-clang.release.lib : ClockP_freertos_r5.obj (.text.ClockP_getTimerCount)
+                  1027ff20    000002d8                                                  : printf.obj (.text._etoa)
+                  102801f8    00000008     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_allocTcc)
+                  10280200    000002d4     libmmwavelink_cascade_am273x.aer5f : rl_sensor.oer5f (.text.rlSetChirpConfig)
+                  102804d4    0000000c     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.xTaskGetCurrentTaskHandle)
+                  102804e0    000002d2     libtestlogger_am273x.aer5f : logger.oer5f (.text.MCPI_setFeatureTestResult)
+                  102807b2    00000002     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.text.vPortValidateInterruptPriority)
+                  102807b4    0000000c                                                  : CpuId_armv7r_asm.obj (.text)
+                  102807c0    000002bc     main_mss.oer5f (.text.MmwCascade_initTask)
+                  10280a7c    00000004     freertos.am273x.r5f.ti-arm-clang.release.lib : ClockP_freertos_r5.obj (.text.ClockP_timerClearOverflowInt)
+                  10280a80    000002bc                                                  : printf.obj (.text._ftoa)
+                  10280d3c    00000004     drivers.am273x.r5f.ti-arm-clang.release.lib : soc.obj (.text.SOC_moduleClockEnable)
+                  10280d40    000002b2     libmmwavelink_cascade_am273x.aer5f : rl_sensor.oer5f (.text.rlRfSetPhaseShiftConfig)
+                  10280ff2    00000002     --HOLE-- [fill = 0]
+                  10280ff4    000002a0     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_init)
+                  10281294    00000288                                                 : soc_rcm.obj (.text.SOC_rcmSetPeripheralClock)
+                  1028151c    00000004                                                 : soc.obj (.text.SOC_moduleSetClockFrequency)
+                  10281520    00000244     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_computeCRC)
+                  10281764    00000240     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff.obj (.text.CBUFF_open)
+                  102819a4    0000000a     freertos.am273x.r5f.ti-arm-clang.release.lib : TimerP_rti.obj (.text.TimerP_getReloadCount)
+                  102819ae    00000002     --HOLE-- [fill = 0]
+                  102819b0    0000023a     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverExecuteGetApi)
+                  10281bea    00000002     --HOLE-- [fill = 0]
+                  10281bec    00000238     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff_edma.obj (.text.CBUFF_configEDMA)
+                  10281e24    0000000a     freertos.am273x.r5f.ti-arm-clang.release.lib : TimerP_rti.obj (.text.TimerP_start)
+                  10281e2e    00000002     --HOLE-- [fill = 0]
+                  10281e30    00000238     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverExecuteSetApi)
+                  10282068    00000008     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_freeDmaChannel)
+                  10282070    0000021a     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverCmdInvoke)
+                  1028228a    00000006     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_contextDisable)
+                  10282290    00000216     cascade_csirx.oer5f (.text.MmwCascade_csirxCommonCallback)
+                  102824a6    00000002     --HOLE-- [fill = 0]
+                  102824a8    0000020c     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_v0.obj (.text.MIBSPI_transfer)
+                  102826b4    00000200     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.text.prvTimerTask)
+                  102828b4    000001fa     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_complexioSetConfig)
+                  10282aae    00000002     --HOLE-- [fill = 0]
+                  10282ab0    000001f4                                                 : cbuff_lvds.obj (.text.CBUFF_openLVDS)
+                  10282ca4    0000000a     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.text.vApplicationIdleHook)
+                  10282cae    00000002     --HOLE-- [fill = 0]
+                  10282cb0    000001ee     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_startLink)
+                  10282e9e    00000002     --HOLE-- [fill = 0]
+                  10282ea0    000001e8     libmmwavelink_cascade_am273x.aer5f : rl_device.oer5f (.text.rlDevSetFillLUTBuff)
+                  10283088    00000008     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_freeParam)
+                  10283090    000001e4     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverMsgReadSpawnCtx)
+                  10283274    000001e0     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_contextSetConfig)
+                  10283454    000001d0     libclang_rt.builtins.a : udivsi3.S.obj (.text)
+                  10283624    00000008     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_freeTcc)
+                  1028362c    00000004     libc.a : _lock.c.obj (.text._nop)
+                  10283630    000001ca     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverAddDevice)
+                  102837fa    00000006     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_contextEnable)
+                  10283800    000001c0                                                 : csirx.obj (.text.CSIRX_dphySetConfig)
+                  102839c0    000001c0     libc.a : fopen.c.obj (.text._openfile)
+                  10283b80    000001b8            : memory.c.obj (.text.aligned_alloc)
+                  10283d38    000001b8            : memory.c.obj (.text.free)
+                  10283ef0    000001ac     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_edma.obj (.text.MIBSPI_edmaAllocChResource)
+                  1028409c    000001a4     libc.a : fputs.c.obj (.text.fputs)
+                  10284240    000001a4     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.xQueueSemaphoreTake)
+                  102843e4    00000008                                                  : TimerP_rti.obj (.text.TimerP_clearOverflowInt)
+                  102843ec    00000004     libc.a : fprintf.c.obj (.text._outc)
+                  102843f0    000001a2     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.text.MMWave_FirmwareDownload)
+                  10284592    00000002     --HOLE-- [fill = 0]
+                  10284594    0000019c     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff.obj (.text.CBUFF_activateSession)
+                  10284730    0000019c                                                 : cbuff.obj (.text.CBUFF_createSession)
+                  102848cc    00000004     libc.a : printf.c.obj (.text._outc)
+                  102848d0    0000019c     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.text.MMWave_spiRead)
+                  10284a6c    00000004     libc.a : fprintf.c.obj (.text._outs)
+                  10284a70    0000019a     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.text.MMWave_spiWrite)
+                  10284c0a    00000002     --HOLE-- [fill = 0]
+                  10284c0c    00000184     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.xQueueGenericSend)
+                  10284d90    00000174     libmmwavelink_cascade_am273x.aer5f : rl_device.oer5f (.text.rlDevicePowerOn)
+                  10284f04    00000164     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff_transfer.obj (.text.CBUFF_addLinkedList)
+                  10285068    00000154                                                 : cbuff_lvds.obj (.text.CBUFF_initLVDS)
+                  102851bc    00000154     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.xQueueReceive)
+                  10285310    0000014c     libc.a : s_ceil.c.obj (.text.ceil)
+                  1028545c    00000004            : printf.c.obj (.text._outs)
+                  10285460    0000014a     cascade_lvds_stream.oer5f (.text.Cascade_LVDSStream_EDMAFreeCBUFFSwChannel)
+                  102855aa    00000002     --HOLE-- [fill = 0]
+                  102855ac    00000144     libc.a : setvbuf.c.obj (.text.setvbuf)
+                  102856f0    0000013c     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff_transfer.obj (.text.CBUFF_setup_USER)
+                  1028582c    00000004     libc.a : fseek.c.obj (.text.fseek)
+                  10285830    00000138     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_deviceGetVersion)
+                  10285968    00000008     freertos.am273x.r5f.ti-arm-clang.release.lib : printf.obj (.text._out_char)
+                  10285970    00000132     libmmwavelink_cascade_am273x.aer5f : rl_sensor.oer5f (.text.rlRfPhShiftCalibDataRestore)
+                  10285aa2    00000008     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.text.uiPortGetRunTimeCounterValue)
+                  10285aaa    00000006     drivers.am273x.r5f.ti-arm-clang.release.lib : gpio_v1.obj (.text.GPIO_moduleEnable)
+                  10285ab0    0000012c     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverDeInit)
+                  10285bdc    00000128     freertos.am273x.r5f.ti-arm-clang.release.lib : ClockP_freertos_r5.obj (.text.ClockP_init)
+                  10285d04    00000006                                                  : SemaphoreP_freertos.obj (.text.SemaphoreP_destruct)
+                  10285d0a    00000006                                                  : port.obj (.text.prvTaskExitError)
+                  10285d10    00000128     libmmwavelink_cascade_am273x.aer5f : rl_sensor.oer5f (.text.rlRfCalibDataRestore)
+                  10285e38    00000006     freertos.am273x.r5f.ti-arm-clang.release.lib : list.obj (.text.vListInitialiseItem)
+                  10285e3e    00000002     --HOLE-- [fill = 0]
+                  10285e40    00000126     ti_drivers_open_close.oer5f (.text.Drivers_open)
+                  10285f66    00000002     --HOLE-- [fill = 0]
+                  10285f68    00000120     libsysbm.a : open.c.obj (.text.open)
+                  10286088    00000118     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff_edma.obj (.text.CBUFF_closeEDMA)
+                  102861a0    00000118     freertos.am273x.r5f.ti-arm-clang.release.lib : TimerP_rti.obj (.text.TimerP_setup)
+                  102862b8    00000118     libclang_rt.builtins.a : udivmoddi4.S.obj (.text)
+                  102863d0    00000116     freertos.am273x.r5f.ti-arm-clang.release.lib : printf.obj (.text._ntoa_format)
+                  102864e6    00000002     --HOLE-- [fill = 0]
+                  102864e8    00000114     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_isResourceAllocated)
+                  102865fc    00000004     libsysbm.a : remove.c.obj (.text.remove)
+                  10286600    00000114     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.text.MMWave_gpioSpiIrqDevCallbackFxn)
+                  10286714    00000112     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.Alloc_resource)
+                  10286826    00000002     --HOLE-- [fill = 0]
+                  10286828    00000110                                                 : mibspi_v0.obj (.text.MIBSPI_close)
+                  10286938    00000004     libclang_rt.builtins.a : aeabi_memcpy.S.obj (.text)
+                  1028693c    00000004     --HOLE-- [fill = 0]
+                  10286940    0000010a     libmmwavelink_cascade_am273x.aer5f : rl_sensor.oer5f (.text.rlSetMultiAdvChirpLUTConfig)
+                  10286a4a    00000002     --HOLE-- [fill = 0]
+                  10286a4c    00000108     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_transferCompletionMasterIsrFxn)
+                  10286b54    00000102                                                 : mibspi_v0.obj (.text.MIBSPI_dmaDoneCb)
+                  10286c56    00000002     --HOLE-- [fill = 0]
+                  10286c58    000000fc                                                 : cbuff.obj (.text.CBUFF_close)
+                  10286d54    000000fc                                                 : edma.obj (.text.EDMA_open)
+                  10286e50    000000fc                                                 : mibspi_edma.obj (.text.MIBSPI_edmaFreeChResource)
+                  10286f4c    00000004     --HOLE-- [fill = 0]
+                  10286f50    000000fc     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.text.MMWave_addChirp)
+                  1028704c    00000004     --HOLE-- [fill = 0]
+                  10287050    000000fa                                    : mmwave_fullcfg.oer5f (.text.MMWave_getChirpHandle)
+                  1028714a    00000006     --HOLE-- [fill = 0]
+                  10287150    000000f8                                    : mmwave_link_common.oer5f (.text.MMWave_executeLink)
+                  10287248    000000f8     libc.a : fopen.c.obj (.text.fopen)
+                  10287340    000000f4     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.xQueueGenericSendFromISR)
+                  10287434    000000f0     drivers.am273x.r5f.ti-arm-clang.release.lib : crc.obj (.text.CRC_configure)
+                  10287524    000000ee                                                 : mibspi_v0.obj (.text.MIBSPI_ISR)
+                  10287612    00000002     --HOLE-- [fill = 0]
+                  10287614    000000ec     freertos.am273x.r5f.ti-arm-clang.release.lib : HeapP_internal.obj (.text.pvHeapMalloc)
+                  10287700    000000ea     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.text.MMWave_addProfile)
+                  102877ea    00000002     --HOLE-- [fill = 0]
+                  102877ec    000000e8     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_freeResource)
+                  102878d4    000000e8     libc.a : fputc.c.obj (.text.fputc)
+                  102879bc    000000e8     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.vTaskSwitchContext)
+                  10287aa4    000000e4     drivers.am273x.r5f.ti-arm-clang.release.lib : soc.obj (.text.SOC_virtToPhy)
+                  10287b88    000000e0     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.xQueueGiveFromISR)
+                  10287c68    000000e0                                                  : tasks.obj (.text.xTaskIncrementTick)
+                  10287d48    000000d8                                                  : queue.obj (.text.xQueueGenericCreateStatic)
+                  10287e20    000000d6     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.text.MMWave_getBpmChirpHandle)
+                  10287ef6    00000002     --HOLE-- [fill = 0]
+                  10287ef8    00000008     freertos.am273x.r5f.ti-arm-clang.release.lib : HwiP_armv7r_asm.obj (.tramp.HwiP_restore.1)
+                  10287f00    000000d6     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.text.MMWave_getPhaseShiftChirpHandle)
+                  10287fd6    00000002     --HOLE-- [fill = 0]
+                  10287fd8    000000d4     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_soc.obj (.text.MIBSPI_socMemInit)
+                  102880ac    000000d2                                                 : csirx.obj (.text.CSIRX_close)
+                  1028817e    00000002     --HOLE-- [fill = 0]
+                  10288180    000000d0     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.text.MMWave_getAdvChirpHandle)
+                  10288250    000000cc     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.text.SOC_rcmGetPeripheralClockFrequency)
+                  1028831c    00000004     --HOLE-- [fill = 0]
+                  10288320    000000ca     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.text.MMWave_addPhaseShiftChirp)
+                  102883ea    00000006     --HOLE-- [fill = 0]
+                  102883f0    000000c8     cascade_csirx.oer5f (.text.MmwCascade_combinedEOLcallback)
+                  102884b8    000000c8     libc.a : getdevice.c.obj (.text.getdevice)
+                  10288580    000000c4     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_allocResource)
+                  10288644    000000c4                                                 : edma.obj (.text.EDMA_unregisterIntr)
+                  10288708    000000c4     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.xQueueReceiveFromISR)
+                  102887cc    000000c4                                                  : tasks.obj (.text.xTaskResumeAll)
+                  10288890    000000c2     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.text.MMWave_getProfileHandle)
+                  10288952    00000002     --HOLE-- [fill = 0]
+                  10288954    00000008     libclang_rt.builtins.a : aeabi_memcpy.S.obj (.tramp.__aeabi_memcpy.1)
+                  1028895c    00000004     --HOLE-- [fill = 0]
+                  10288960    000000c0     libmmwave_cascade_am273x.aer5f : mmwave.oer5f (.text.MMWave_init)
+                  10288a20    000000c0     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.prvInitialiseNewTask)
+                  10288ae0    000000c0                                                  : tasks.obj (.text.xTaskCreateStatic)
+                  10288ba0    000000be     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.text.MMWave_getChirpCfg)
+                  10288c5e    00000002     --HOLE-- [fill = 0]
+                  10288c60    000000bc     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff.obj (.text.CBUFF_setVC)
+                  10288d1c    000000bc                                                 : edma.obj (.text.EDMA_registerIntr)
+                  10288dd8    00000008     freertos.am273x.r5f.ti-arm-clang.release.lib : HwiP_armv7r_asm.obj (.tramp.HwiP_enable.1)
+                  10288de0    000000bc     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_spawn)
+                  10288e9c    000000bc     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.prvAddNewTaskToReadyList)
+                  10288f58    000000b8     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.text.SOC_rcmGetDspHsDivOut)
+                  10289010    000000b8                                                 : soc_rcm.obj (.text.SOC_rcmGetPerHsDivOut)
+                  102890c8    000000b8     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.text.prvSampleTimeNow)
+                  10289180    000000b8     libmmwavelink_cascade_am273x.aer5f : rl_device.oer5f (.text.rlDeviceGetVersion)
+                  10289238    00000008     freertos.am273x.r5f.ti-arm-clang.release.lib : PmuP_armv7r_asm.obj (.tramp.PmuP_enableCounters.1)
+                  10289240    000000b6     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_stopLink)
+                  102892f6    00000002     --HOLE-- [fill = 0]
+                  102892f8    000000b4     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_freeChannelRegion)
+                  102893ac    000000b4     libc.a : fclose.c.obj (.text.__TI_closefile)
+                  10289460    000000b4            : fseek.c.obj (.text.fseeko)
+                  10289514    000000b2     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_complexioGetPendingIntr)
+                  102895c6    00000002     --HOLE-- [fill = 0]
+                  102895c8    000000b0                                                 : csirx.obj (.text.CSIRX_open)
+                  10289678    000000b0     freertos.am273x.r5f.ti-arm-clang.release.lib : TaskP_freertos.obj (.text.TaskP_loadUpdateAll)
+                  10289728    000000ac                                                  : printf.obj (.text._ntoa_long_long)
+                  102897d4    0000000c     --HOLE-- [fill = 0]
+                  102897e0    000000ac     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverConstructInMsg)
+                  1028988c    00000004     --HOLE-- [fill = 0]
+                  10289890    000000a8     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.text.MMWave_initLink)
+                  10289938    000000a8     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.vTaskPriorityDisinheritAfterTimeout)
+                  102899e0    000000a4     libmmwavelink_cascade_am273x.aer5f : rl_sensor.oer5f (.text.rlSetProfileConfig)
+                  10289a84    000000a4     libc.a : memory.c.obj (.text.split)
+                  10289b28    000000a4     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.xTaskPriorityDisinherit)
+                  10289bcc    000000a0     libsysbm.a : hostrename.c.obj (.text.HOSTrename)
+                  10289c6c    00000004     --HOLE-- [fill = 0]
+                  10289c70    0000009e     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.text.MMWave_getPhaseShiftChirpCfg)
+                  10289d0e    00000002     --HOLE-- [fill = 0]
+                  10289d10    0000009e                                    : mmwave_fullcfg.oer5f (.text.MMWave_getProfileCfg)
+                  10289dae    00000002     --HOLE-- [fill = 0]
+                  10289db0    0000009c                                    : mmwave_fullcfg.oer5f (.text.MMWave_getNumAdvChirpParams)
+                  10289e4c    00000004     --HOLE-- [fill = 0]
+                  10289e50    0000009c                                    : mmwave_fullcfg.oer5f (.text.MMWave_getNumBpmChirp)
+                  10289eec    00000004     --HOLE-- [fill = 0]
+                  10289ef0    0000009c                                    : mmwave_fullcfg.oer5f (.text.MMWave_getNumPhaseShiftChirp)
+                  10289f8c    00000004     --HOLE-- [fill = 0]
+                  10289f90    0000009c                                    : mmwave_fullcfg.oer5f (.text.MMWave_getNumProfiles)
+                  1028a02c    0000009c     libc.a : _io_perm.c.obj (.text.__TI_wrt_ok)
+                  1028a0c8    00000008     --HOLE-- [fill = 0]
+                  1028a0d0    0000009a     cascade_lvds_stream.oer5f (.text.Cascade_LVDSStreamSwConfig)
+                  1028a16a    00000006     --HOLE-- [fill = 0]
+                  1028a170    0000009a     common.oer5f (.text.Mmwave_populateDefaultOpenCfg)
+                  1028a20a    00000002     --HOLE-- [fill = 0]
+                  1028a20c    00000098     libsysbm.a : hostlseek.c.obj (.text.HOSTlseek)
+                  1028a2a4    00000098     libc.a : fprintf.c.obj (.text.fprintf)
+                  1028a33c    00000098            : printf.c.obj (.text.printf)
+                  1028a3d4    0000000c     --HOLE-- [fill = 0]
+                  1028a3e0    00000096     libmmwave_cascade_am273x.aer5f : mmwave.oer5f (.text.MMWave_start)
+                  1028a476    00000002     --HOLE-- [fill = 0]
+                  1028a478    00000094     libsysbm.a : hostopen.c.obj (.text.HOSTopen)
+                  1028a50c    00000094     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.eTaskGetState)
+                  1028a5a0    00000094                                                  : tasks.obj (.text.vTaskDelete)
+                  1028a634    0000000c     --HOLE-- [fill = 0]
+                  1028a640    00000090     main_mss.oer5f (.text.configureTransfer)
+                  1028a6d0    00000090     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.vTaskStartScheduler)
+                  1028a760    0000008e     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.text.MMWave_getNumChirps)
+                  1028a7ee    00000002     --HOLE-- [fill = 0]
+                  1028a7f0    0000008e                                    : mmwave_link_spi_22xx.oer5f (.text.MMWave_waitIRQStatus)
+                  1028a87e    00000002     --HOLE-- [fill = 0]
+                  1028a880    0000008c     cascade_lvds_stream.oer5f (.text.Cascade_LVDSStreamInit)
+                  1028a90c    0000008c     freertos.am273x.r5f.ti-arm-clang.release.lib : printf.obj (.text._ntoa_long)
+                  1028a998    0000008c     libsysbm.a : close.c.obj (.text.close)
+                  1028aa24    0000008c     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.xTaskCheckForTimeOut)
+                  1028aab0    0000008a     libmmwave_cascade_am273x.aer5f : mmwave_osal.oer5f (.text.MMWave_osalSemCreate)
+                  1028ab3a    00000002     --HOLE-- [fill = 0]
+                  1028ab3c    00000088     libc.a : fflush.c.obj (.text.__TI_doflush)
+                  1028abc4    00000088     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.text.pxPortInitialiseStack)
+                  1028ac4c    00000088                                                  : HeapP_internal.obj (.text.vHeapFree)
+                  1028acd4    00000084     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff_lvds.obj (.text.CBUFF_initLVDSLinkListParams)
+                  1028ad58    00000084                                                 : cbuff_transfer.obj (.text.CBUFF_setupTransfer)
+                  1028addc    00000084                                                 : mibspi_edma.obj (.text.EDMA_rxCompletionIsrFxn)
+                  1028ae60    00000084                                                 : mibspi_edma.obj (.text.EDMA_txCompletionIsrFxn)
+                  1028aee4    00000084     libsysbm.a : hostread.c.obj (.text.HOSTread)
+                  1028af68    00000084                : hostwrite.c.obj (.text.HOSTwrite)
+                  1028afec    00000084     drivers.am273x.r5f.ti-arm-clang.release.lib : soc.obj (.text.SOC_controlModuleUnlockMMR)
+                  1028b070    00000084     libmmwavelink_cascade_am273x.aer5f : rl_device.oer5f (.text.rlDeviceFileDownload)
+                  1028b0f4    0000000c     --HOLE-- [fill = 0]
+                  1028b100    00000082     cascade_csirx.oer5f (.text.MmwCascade_csirxClose)
+                  1028b182    0000000e     --HOLE-- [fill = 0]
+                  1028b190    00000082     main_mss.oer5f (.text.main)
+                  1028b212    00000002     --HOLE-- [fill = 0]
+                  1028b214    00000080     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff.obj (.text.CBUFF_ISR)
+                  1028b294    00000080     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.xTaskPriorityInherit)
+                  1028b314    0000007e     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_reset)
+                  1028b392    0000007e                                                 : edma.obj (.text.EDMA_configureChannelRegion)
+                  1028b410    0000007c     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.prvCopyDataToQueue)
+                  1028b48c    0000007c                                                  : tasks.obj (.text.vTaskGetInfo)
+                  1028b508    0000007c                                                  : tasks.obj (.text.xTaskRemoveFromEventList)
+                  1028b584    0000000c     --HOLE-- [fill = 0]
+                  1028b590    0000007a     libmmwave_cascade_am273x.aer5f : mmwave_osal.oer5f (.text.MMWave_osalMutexCreate)
+                  1028b60a    00000006     --HOLE-- [fill = 0]
+                  1028b610    0000007a     libmmwavelink_cascade_am273x.aer5f : rl_device.oer5f (.text.rlDevicePowerOff)
+                  1028b68a    00000002     --HOLE-- [fill = 0]
+                  1028b68c    00000078     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_v0.obj (.text.MIBSPI_init)
+                  1028b704    00000078                                                 : mibspi_v0.obj (.text.MIBSPI_writeDataRAM)
+                  1028b77c    00000004     --HOLE-- [fill = 0]
+                  1028b780    00000078     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_initCRC)
+                  1028b7f8    00000008     --HOLE-- [fill = 0]
+                  1028b800    00000078     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverHostIrqHandler)
+                  1028b878    00000078     libc.a : snprintf.c.obj (.text.snprintf)
+                  1028b8f0    00000076     freertos.am273x.r5f.ti-arm-clang.release.lib : printf.obj (.text._out_rev)
+                  1028b966    00000002     --HOLE-- [fill = 0]
+                  1028b968    00000074     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.text.SOC_rcmGetCoreFout)
+                  1028b9dc    00000074     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.xQueueGenericReset)
+                  1028ba50    00000072     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_commonGetPendingIntr)
+                  1028bac2    0000000e     --HOLE-- [fill = 0]
+                  1028bad0    00000070     cascade_csirx.oer5f (.text.MmwCascade_csirxInit)
+                  1028bb40    00000070     ti_power_clock_config.oer5f (.text.PowerClock_init)
+                  1028bbb0    00000070     libc.a : atoi.c.obj (.text.atoi)
+                  1028bc20    00000070     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.text.xTimerCreateTimerTask)
+                  1028bc90    0000006e     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_disableTransferRegion)
+                  1028bcfe    0000006e                                                 : edma.obj (.text.EDMA_enableTransferRegion)
+                  1028bd6c    0000006c                                                 : edma.obj (.text.EDMA_close)
+                  1028bdd8    0000006c     libsysbm.a : hostunlink.c.obj (.text.HOSTunlink)
+                  1028be44    0000000c     --HOLE-- [fill = 0]
+                  1028be50    0000006c     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_deinitLink)
+                  1028bebc    0000006c     libc.a : getdevice.c.obj (.text.finddevice)
+                  1028bf28    00000008     --HOLE-- [fill = 0]
+                  1028bf30    0000006c     libmmwavelink_cascade_am273x.aer5f : rl_controller.oer5f (.text.rlGetSubBlock)
+                  1028bf9c    0000006c     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.text.xTimerGenericCommand)
+                  1028c008    00000008     --HOLE-- [fill = 0]
+                  1028c010    00000068     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.text.MMWave_enableDevice)
+                  1028c078    00000068     drivers.am273x.r5f.ti-arm-clang.release.lib : soc.obj (.text.SOC_controlModuleLockMMR)
+                  1028c0e0    00000068     freertos.am273x.r5f.ti-arm-clang.release.lib : DebugP_freertos.obj (.text._DebugP_logZone)
+                  1028c148    00000068                                                  : queue.obj (.text.prvUnlockQueue)
+                  1028c1b0    00000066     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_v0.obj (.text.MIBSPI_readDataRAM)
+                  1028c216    0000000a     --HOLE-- [fill = 0]
+                  1028c220    00000066     libmmwave_cascade_am273x.aer5f : mmwave.oer5f (.text.MMWave_deinit)
+                  1028c286    0000000a     --HOLE-- [fill = 0]
+                  1028c290    00000066                                    : mmwave.oer5f (.text.MMWave_open)
+                  1028c2f6    00000002     --HOLE-- [fill = 0]
+                  1028c2f8    00000064     freertos.am273x.r5f.ti-arm-clang.release.lib : SemaphoreP_freertos.obj (.text.SemaphoreP_constructBinary)
+                  1028c35c    00000004     --HOLE-- [fill = 0]
+                  1028c360    00000064     libmmwavelink_cascade_am273x.aer5f : rl_device.oer5f (.text.rlDeviceAdvFrameConfigApply)
+                  1028c3c4    0000000c     --HOLE-- [fill = 0]
+                  1028c3d0    00000064                                        : rl_device.oer5f (.text.rlDeviceFrameConfigApply)
+                  1028c434    00000060     libsysbm.a : hostclose.c.obj (.text.HOSTclose)
+                  1028c494    0000000c     --HOLE-- [fill = 0]
+                  1028c4a0    00000060     libmmwave_cascade_am273x.aer5f : mmwave.oer5f (.text.MMWave_config)
+                  1028c500    00000060     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.text.SOC_rcmGetCoreHsDivOut)
+                  1028c560    00000060     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.prvAddCurrentTaskToDelayedList)
+                  1028c5c0    00000060     libmmwavelink_cascade_am273x.aer5f : rl_sensor.oer5f (.text.rlSetFrameConfig)
+                  1028c620    0000005e     libmmwave_cascade_am273x.aer5f : mmwave.oer5f (.text.MMWave_execute)
+                  1028c67e    00000002     --HOLE-- [fill = 0]
+                  1028c680    0000005c     ti_drivers_open_close.oer5f (.text.Drivers_close)
+                  1028c6dc    0000005c     freertos.am273x.r5f.ti-arm-clang.release.lib : PmuP_armv7r.obj (.text.pmu)
+                  1028c738    0000005c                                                  : timers.obj (.text.prvCheckForValidListAndQueue)
+                  1028c794    00000058     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_contextGetPendingIntr)
+                  1028c7ec    00000058                                                 : mibspi_v0.obj (.text.MIBSPI_enablePinSettings)
+                  1028c844    00000058     freertos.am273x.r5f.ti-arm-clang.release.lib : DebugP_log.obj (.text._DebugP_assert)
+                  1028c89c    00000058     libc.a : fopen.c.obj (.text.__TI_cleanup)
+                  1028c8f4    00000058     libsysbm.a : trgmsg.c.obj (.text.__TI_readmsg)
+                  1028c94c    00000058                : trgmsg.c.obj (.text.__TI_writemsg)
+                  1028c9a4    00000058     libc.a : snprintf.c.obj (.text._outs)
+                  1028c9fc    00000054     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff.obj (.text.CBUFF_ErrorISR)
+                  1028ca50    00000054                                                 : soc_rcm.obj (.text.SOC_rcmGetADPLLJFout)
+                  1028caa4    00000054     freertos.am273x.r5f.ti-arm-clang.release.lib : SemaphoreP_freertos.obj (.text.SemaphoreP_pend)
+                  1028caf8    00000054     libc.a : exit.c.obj (.text.exit)
+                  1028cb4c    00000004     --HOLE-- [fill = 0]
+                  1028cb50    00000050     libmmwavelink_cascade_am273x.aer5f : rl_sensor.oer5f (.text.rlSetAdvFrameConfig)
+                  1028cba0    00000050     libc.a : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit)
+                  1028cbf0    0000004e     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_disableChInShadowRegRegion)
+                  1028cc3e    00000002     --HOLE-- [fill = 0]
+                  1028cc40    0000004c                                                 : soc_rcm.obj (.text.SOC_rcmGetXtalFrequency)
+                  1028cc8c    0000004c     libc.a : fclose.c.obj (.text.fclose)
+                  1028ccd8    0000004c     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.prvIdleTask)
+                  1028cd24    0000000c     --HOLE-- [fill = 0]
+                  1028cd30    0000004c     libmmwavelink_cascade_am273x.aer5f : rl_controller.oer5f (.text.rlAppendSubBlock)
+                  1028cd7c    0000004c     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.vTaskDelay)
+                  1028cdc8    0000004c                                                  : tasks.obj (.text.vTaskPlaceOnEventListRestricted)
+                  1028ce14    0000004a                                                  : SemaphoreP_freertos.obj (.text.SemaphoreP_post)
+                  1028ce5e    00000002     --HOLE-- [fill = 0]
+                  1028ce60    0000004a     libmmwavelink_cascade_am273x.aer5f : rl_device.oer5f (.text.rlDeviceSetCsi2Config)
+                  1028ceaa    00000006     --HOLE-- [fill = 0]
+                  1028ceb0    0000004a                                        : rl_device.oer5f (.text.rlDeviceSetDataFmtConfig)
+                  1028cefa    00000006     --HOLE-- [fill = 0]
+                  1028cf00    0000004a                                        : rl_device.oer5f (.text.rlDeviceSetDataPathClkConfig)
+                  1028cf4a    00000006     --HOLE-- [fill = 0]
+                  1028cf50    0000004a                                        : rl_device.oer5f (.text.rlDeviceSetDataPathConfig)
+                  1028cf9a    00000006     --HOLE-- [fill = 0]
+                  1028cfa0    0000004a                                        : rl_device.oer5f (.text.rlDeviceSetLaneConfig)
+                  1028cfea    00000006     --HOLE-- [fill = 0]
+                  1028cff0    0000004a                                        : rl_device.oer5f (.text.rlDeviceSetMiscConfig)
+                  1028d03a    00000002     --HOLE-- [fill = 0]
+                  1028d03c    00000048     freertos.am273x.r5f.ti-arm-clang.release.lib : ClockP_freertos.obj (.text.ClockP_getTimeUsec)
+                  1028d084    0000000c     --HOLE-- [fill = 0]
+                  1028d090    00000048     cascade_csirx.oer5f (.text.MmwCascade_csirxCombinedEOFcallback)
+                  1028d0d8    00000008     --HOLE-- [fill = 0]
+                  1028d0e0    00000048     cascade_csirx.oer5f (.text.MmwCascade_csirxOpen)
+                  1028d128    00000048     libc.a : memccpy.c.obj (.text.memccpy)
+                  1028d170    00000048     libsysbm.a : unlink.c.obj (.text.unlink)
+                  1028d1b8    00000048     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.xQueueGiveMutexRecursive)
+                  1028d200    00000046     drivers.am273x.r5f.ti-arm-clang.release.lib : crc.obj (.text.CRC_initialize)
+                  1028d246    0000000a     --HOLE-- [fill = 0]
+                  1028d250    00000046     libmmwave_cascade_am273x.aer5f : mmwave.oer5f (.text.MMWave_close)
+                  1028d296    0000000a     --HOLE-- [fill = 0]
+                  1028d2a0    00000046                                    : mmwave_listlib.oer5f (.text.MMWave_listCat)
+                  1028d2e6    0000000a     --HOLE-- [fill = 0]
+                  1028d2f0    00000046                                    : mmwave.oer5f (.text.MMWave_stop)
+                  1028d336    00000046     freertos.am273x.r5f.ti-arm-clang.release.lib : HeapP_internal.obj (.text.vHeapCreateStatic)
+                  1028d37c    00000046                                                  : queue.obj (.text.vQueueWaitForMessageRestricted)
+                  1028d3c2    00000044     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_complexioSetLaneIntr)
+                  1028d406    00000002     --HOLE-- [fill = 0]
+                  1028d408    00000044     freertos.am273x.r5f.ti-arm-clang.release.lib : SemaphoreP_freertos.obj (.text.SemaphoreP_constructMutex)
+                  1028d44c    00000044                                                  : tasks.obj (.text.prvDeleteTCB)
+                  1028d490    00000044                                                  : queue.obj (.text.xQueueTakeMutexRecursive)
+                  1028d4d4    00000040     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_mapChToEvtQ)
+                  1028d514    00000040     libc.a : memory.c.obj (.text.free_list_insert)
+                  1028d554    00000040     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.vTaskPlaceOnEventList)
+                  1028d594    0000003e     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_contextSetPingPongAddress)
+                  1028d5d2    00000002     --HOLE-- [fill = 0]
+                  1028d5d4    0000003c                                                 : edma.obj (.text.EDMA_getBaseAddr)
+                  1028d610    0000003c     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_internalLinkSync)
+                  1028d64c    00000004     --HOLE-- [fill = 0]
+                  1028d650    0000003c                                    : mmwave_link_spi_22xx.oer5f (.text.MMWave_spiOpen)
+                  1028d68c    0000003c     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.text.prvInsertTimerInActiveList)
+                  1028d6c8    00000008     --HOLE-- [fill = 0]
+                  1028d6d0    0000003a     ti_dpl_config.oer5f (.text.Dpl_init)
+                  1028d70a    0000003a     freertos.am273x.r5f.ti-arm-clang.release.lib : HeapP_internal.obj (.text.prvInsertBlockIntoFreeList)
+                  1028d744    0000000c     --HOLE-- [fill = 0]
+                  1028d750    0000003a     libmmwavelink_cascade_am273x.aer5f : rl_device.oer5f (.text.rlDeviceRfStart)
+                  1028d78a    00000002     --HOLE-- [fill = 0]
+                  1028d78c    00000038     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_v0.obj (.text.MIBSPI_getPhase)
+                  1028d7c4    00000038                                                 : mibspi_v0.obj (.text.MIBSPI_getPolarity)
+                  1028d7fc    00000004     --HOLE-- [fill = 0]
+                  1028d800    00000038     common.oer5f (.text.Mmwave_ctrlTask)
+                  1028d838    00000008     --HOLE-- [fill = 0]
+                  1028d840    00000038     libmmwavelink_cascade_am273x.aer5f : rl_device.oer5f (.text.rlDeviceSetHsiClk)
+                  1028d878    00000008     --HOLE-- [fill = 0]
+                  1028d880    00000038                                        : rl_sensor.oer5f (.text.rlEnableContMode)
+                  1028d8b8    00000008     --HOLE-- [fill = 0]
+                  1028d8c0    00000038                                        : rl_sensor.oer5f (.text.rlRfInit)
+                  1028d8f8    00000008     --HOLE-- [fill = 0]
+                  1028d900    00000038                                        : rl_sensor.oer5f (.text.rlRfInitCalibConfig)
+                  1028d938    00000008     --HOLE-- [fill = 0]
+                  1028d940    00000038                                        : rl_sensor.oer5f (.text.rlRfRunTimeCalibConfig)
+                  1028d978    00000008     --HOLE-- [fill = 0]
+                  1028d980    00000038                                        : rl_sensor.oer5f (.text.rlRfSetCalMonFreqLimitConfig)
+                  1028d9b8    00000008     --HOLE-- [fill = 0]
+                  1028d9c0    00000038                                        : rl_sensor.oer5f (.text.rlRfSetCalMonTimeUnitConfig)
+                  1028d9f8    00000008     --HOLE-- [fill = 0]
+                  1028da00    00000038                                        : rl_sensor.oer5f (.text.rlRfSetDeviceCfg)
+                  1028da38    00000008     --HOLE-- [fill = 0]
+                  1028da40    00000038                                        : rl_sensor.oer5f (.text.rlRfSetLdoBypassConfig)
+                  1028da78    00000008     --HOLE-- [fill = 0]
+                  1028da80    00000038                                        : rl_sensor.oer5f (.text.rlRfSetMiscConfig)
+                  1028dab8    00000008     --HOLE-- [fill = 0]
+                  1028dac0    00000038                                        : rl_sensor.oer5f (.text.rlSensorStart)
+                  1028daf8    00000008     --HOLE-- [fill = 0]
+                  1028db00    00000038                                        : rl_sensor.oer5f (.text.rlSensorStop)
+                  1028db38    00000008     --HOLE-- [fill = 0]
+                  1028db40    00000038                                        : rl_sensor.oer5f (.text.rlSetAdcOutConfig)
+                  1028db78    00000008     --HOLE-- [fill = 0]
+                  1028db80    00000038                                        : rl_sensor.oer5f (.text.rlSetAdvChirpConfig)
+                  1028dbb8    00000008     --HOLE-- [fill = 0]
+                  1028dbc0    00000038                                        : rl_sensor.oer5f (.text.rlSetBpmCommonConfig)
+                  1028dbf8    00000008     --HOLE-- [fill = 0]
+                  1028dc00    00000038                                        : rl_sensor.oer5f (.text.rlSetChannelConfig)
+                  1028dc38    00000008     --HOLE-- [fill = 0]
+                  1028dc40    00000038                                        : rl_sensor.oer5f (.text.rlSetContModeConfig)
+                  1028dc78    00000008     --HOLE-- [fill = 0]
+                  1028dc80    00000038                                        : rl_sensor.oer5f (.text.rlSetLowPowerModeConfig)
+                  1028dcb8    00000038     freertos.am273x.r5f.ti-arm-clang.release.lib : TaskP_freertos.obj (.text.vApplicationLoadHook)
+                  1028dcf0    00000038                                                  : queue.obj (.text.vQueueDelete)
+                  1028dd28    00000034                                                  : ClockP_freertos.obj (.text.ClockP_usleep)
+                  1028dd5c    00000034     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_clrMissEvtRegion)
+                  1028dd90    00000034     freertos.am273x.r5f.ti-arm-clang.release.lib : HeapP_freertos.obj (.text.HeapP_construct)
+                  1028ddc4    00000034     libc.a : memory.c.obj (.text.free_list_remove)
+                  1028ddf8    00000034     libsysbm.a : lseek.c.obj (.text.lseek)
+                  1028de2c    00000034     libc.a : fputs.c.obj (.text.puts)
+                  1028de60    00000034     libsysbm.a : write.c.obj (.text.write)
+                  1028de94    00000032     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff.obj (.text.CBUFF_clearStatus)
+                  1028dec6    00000032                                                 : csirx.obj (.text.CSIRX_complexioSetPullUpPullDown)
+                  1028def8    00000032                                                 : edma.obj (.text.EDMA_unmapChToEvtQ)
+                  1028df2a    00000032                                                 : mibspi_edma.obj (.text.MIBSPI_edmaOpen)
+                  1028df5c    00000030                                                 : cbuff_lvds.obj (.text.CBUFF_closeLVDS)
+                  1028df8c    00000030                                                 : cbuff.obj (.text.CBUFF_validateBufferCfg)
+                  1028dfbc    00000030                                                 : gpio_v1.obj (.text.GPIO_markHighLowLevelInterrupt)
+                  1028dfec    00000030                                                 : soc_rcm.obj (.text.SOC_rcmGetModuleClkDivVal)
+                  1028e01c    00000030     libc.a : snprintf.c.obj (.text._outc)
+                  1028e04c    00000030     freertos.am273x.r5f.ti-arm-clang.release.lib : PmuP_armv7r_asm.obj (.text.pmu)
+                  1028e07c    00000030                                                  : tasks.obj (.text.xTaskGetIdleTaskHandle)
+                  1028e0ac    0000002e     drivers.am273x.r5f.ti-arm-clang.release.lib : crc.obj (.text.CRC_channelReset)
+                  1028e0da    0000002e                                                 : csirx.obj (.text.CSIRX_commonIsr)
+                  1028e108    0000002e                                                 : edma.obj (.text.EDMA_enableChInShadowRegRegion)
+                  1028e136    0000002e                                                 : gpio_v1.obj (.text.GPIO_setTrigType)
+                  1028e164    0000000c     --HOLE-- [fill = 0]
+                  1028e170    0000002e     common.oer5f (.text.Mmwave_eventFxn)
+                  1028e19e    0000002e     drivers.am273x.r5f.ti-arm-clang.release.lib : pinmux.obj (.text.Pinmux_config)
+                  1028e1cc    0000002e     freertos.am273x.r5f.ti-arm-clang.release.lib : list.obj (.text.vListInsert)
+                  1028e1fa    00000002     --HOLE-- [fill = 0]
+                  1028e1fc    0000002c                                                  : ClockP_freertos.obj (.text.ClockP_timerTickIsr)
+                  1028e228    0000002c     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_getHandle)
+                  1028e254    0000002a                                                 : csirx.obj (.text.CSIRX_complexioGetLanePendingIntr)
+                  1028e27e    0000002a                                                 : csirx.obj (.text.CSIRX_contextEnableOrDisable)
+                  1028e2a8    00000028                                                 : crc.obj (.text.CRC_getPSASig)
+                  1028e2d0    00000028                                                 : crc.obj (.text.CRC_getPSASigRegAddr)
+                  1028e2f8    00000028                                                 : csirx.obj (.text.CSIRX_contextClearAllIntr)
+                  1028e320    00000028                                                 : edma.obj (.text.EDMA_disableTccInShadowRegRegion)
+                  1028e348    00000028                                                 : mibspi_edma.obj (.text.MIBSPI_edmaMapTcc2DmaReqLine)
+                  1028e370    00000028     libmmwave_cascade_am273x.aer5f : mmwave.oer5f (.text.MMWave_decodeError)
+                  1028e398    00000028     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.text.vApplicationStackOverflowHook)
+                  1028e3c0    00000028                                                  : queue.obj (.text.vQueueUnregisterQueue)
+                  1028e3e8    00000026     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_enableTccInShadowRegRegion)
+                  1028e40e    00000026                                                 : edma.obj (.text.EDMA_setPaRAM)
+                  1028e434    00000026                                                 : mibspi_v0.obj (.text.MIBSPI_checkTGComplete)
+                  1028e45a    00000006     --HOLE-- [fill = 0]
+                  1028e460    00000026     ti_drivers_config.oer5f (.text.System_init)
+                  1028e486    00000002     --HOLE-- [fill = 0]
+                  1028e488    00000024     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_init)
+                  1028e4ac    00000024     freertos.am273x.r5f.ti-arm-clang.release.lib : ClockP_freertos.obj (.text.ClockP_sleep)
+                  1028e4d0    00000024                                                  : TimerP_rti.obj (.text.TimerP_Params_init)
+                  1028e4f4    00000024                                                  : printf.obj (.text._atoi)
+                  1028e518    00000024                                                  : queue.obj (.text.prvCopyDataFromQueue)
+                  1028e53c    00000024                                                  : tasks.obj (.text.prvResetNextTaskUnblockTime)
+                  1028e560    00000024                                                  : list.obj (.text.uxListRemove)
+                  1028e584    00000024                                                  : queue.obj (.text.vQueueAddToRegistry)
+                  1028e5a8    00000024                                                  : tasks.obj (.text.vTaskExitCritical)
+                  1028e5cc    00000024     libclang_rt.builtins.a : aeabi_uldivmod.S.obj (.text)
+                  1028e5f0    00000022     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_complexioGetPowerStatus)
+                  1028e612    00000022                                                 : csirx.obj (.text.CSIRX_complexioIsResetDone)
+                  1028e634    00000022                                                 : edma.obj (.text.EDMA_linkChannel)
+                  1028e656    00000022                                                 : gpio_v1.obj (.text.GPIO_setDirMode)
+                  1028e678    00000022                                                 : mibspi_v0.obj (.text.MIBSPI_transferGroupDisable)
+                  1028e69a    00000020                                                 : cbuff_transfer.obj (.text.CBUFF_initLinkedList)
+                  1028e6ba    00000020                                                 : csirx.obj (.text.CSIRX_commonDisable)
+                  1028e6da    00000020                                                 : csirx.obj (.text.CSIRX_commonEnable)
+                  1028e6fa    00000020                                                 : csirx.obj (.text.CSIRX_complexioDeassertReset)
+                  1028e71a    00000020                                                 : csirx.obj (.text.CSIRX_complexioSetPowerCommand)
+                  1028e73a    00000002     --HOLE-- [fill = 0]
+                  1028e73c    00000020     freertos.am273x.r5f.ti-arm-clang.release.lib : DebugP_log.obj (.text.DebugP_logZoneEnable)
+                  1028e75c    00000020     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.text.SOC_rcmGetR5ClockFrequency)
+                  1028e77c    00000020     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.prvInitialiseNewQueue)
+                  1028e79c    00000020     libc.a : wcslen.c.obj (.text.wcslen)
+                  1028e7bc    0000001e     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_v0.obj (.text.MIBSPI_resetTransactionState)
+                  1028e7da    0000001c                                                 : csirx.obj (.text.CSIRX_commonClearAllIntr)
+                  1028e7f6    0000001c                                                 : csirx.obj (.text.CSIRX_complexioClearAllIntr)
+                  1028e812    0000001c     freertos.am273x.r5f.ti-arm-clang.release.lib : HeapP_freertos.obj (.text.HeapP_alloc)
+                  1028e82e    00000002     --HOLE-- [fill = 0]
+                  1028e830    0000001c     libmmwave_cascade_am273x.aer5f : mmwave_listlib.oer5f (.text.MMWave_listRemove)
+                  1028e84c    0000001c     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.text.SOC_rcmGetR5Clock)
+                  1028e868    0000001c     freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.prvInitialiseMutex)
+                  1028e884    0000001c     libc.a : _printfi.c.obj (.text.strlen)
+                  1028e8a0    0000001c     libsysbm.a : hostrename.c.obj (.text.strlen)
+                  1028e8bc    0000001c     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.text.vApplicationGetIdleTaskMemory)
+                  1028e8d8    0000001c                                                  : port.obj (.text.vApplicationGetTimerTaskMemory)
+                  1028e8f4    0000001c                                                  : port.obj (.text.vPortTimerTickHandler)
+                  1028e910    0000001c                                                  : printf.obj (.text.vprintf_)
+                  1028e92c    0000001c                                                  : queue.obj (.text.xQueueCreateMutexStatic)
+                  1028e948    0000001c                                                  : tasks.obj (.text.xTaskGetSchedulerState)
+                  1028e964    0000001c     libsysbm.a : memcpy32.S.obj (.text:TI_memcpy_small)
+                  1028e980    0000001c     libclang_rt.builtins.a : aeabi_memset.S.obj (.text)
+                  1028e99c    0000001a     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff_lvds.obj (.text.CBUFF_finalizeLVDSLinkListParams)
+                  1028e9b6    0000001a     freertos.am273x.r5f.ti-arm-clang.release.lib : CpuId_armv7r.obj (.text.CSL_armR5GetCpuID)
+                  1028e9d0    0000001a     drivers.am273x.r5f.ti-arm-clang.release.lib : gpio_v1.obj (.text.GPIO_clearInterrupt)
+                  1028e9ea    0000001a                                                 : gpio_v1.obj (.text.GPIO_enableInterrupt)
+                  1028ea04    0000001a     freertos.am273x.r5f.ti-arm-clang.release.lib : HeapP_freertos.obj (.text.HeapP_free)
+                  1028ea1e    00000002     --HOLE-- [fill = 0]
+                  1028ea20    0000001a     libmmwave_cascade_am273x.aer5f : mmwave_listlib.oer5f (.text.MMWave_listAdd)
+                  1028ea3a    00000006     --HOLE-- [fill = 0]
+                  1028ea40    0000001a     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverIsDeviceMapValid)
+                  1028ea5a    0000001a     freertos.am273x.r5f.ti-arm-clang.release.lib : list.obj (.text.vListInsertEnd)
+                  1028ea74    0000001a                                                  : heap_3.obj (.text.vPortFree)
+                  1028ea8e    00000018     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff_transfer.obj (.text.CBUFF_shutdownTransfer)
+                  1028eaa6    00000018                                                 : gpio_v1.obj (.text.GPIO_pinRead)
+                  1028eabe    00000002     --HOLE-- [fill = 0]
+                  1028eac0    00000018     libmmwave_cascade_am273x.aer5f : mmwave_osal.oer5f (.text.MMWave_osalMutexLock)
+                  1028ead8    00000008     --HOLE-- [fill = 0]
+                  1028eae0    00000018     main_mss.oer5f (.text.MmwCascade_CsiConfigTask)
+                  1028eaf8    00000018     freertos.am273x.r5f.ti-arm-clang.release.lib : TimerP_rti.obj (.text.TimerP_getCount)
+                  1028eb10    00000018                                                  : boot_armv7r.obj (.text._system_pre_init)
+                  1028eb28    00000018                                                  : queue.obj (.text.prvIsQueueEmpty)
+                  1028eb40    00000018                                                  : tasks.obj (.text.pvTaskIncrementMutexHeldCount)
+                  1028eb58    00000008     --HOLE-- [fill = 0]
+                  1028eb60    00000018     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverFillPayload)
+                  1028eb78    00000018     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.text.vTaskEnterCritical)
+                  1028eb90    00000018                                                  : port.obj (.text.xPortStartScheduler)
+                  1028eba8    00000018                                                  : tasks.obj (.text.xTaskGetTickCount)
+                  1028ebc0    00000018     libsysbm.a : memset32.S.obj (.text:TI_memset_small)
+                  1028ebd8    00000016     drivers.am273x.r5f.ti-arm-clang.release.lib : gpio_v1.obj (.text.GPIO_pinWriteHigh)
+                  1028ebee    00000016                                                 : gpio_v1.obj (.text.GPIO_pinWriteLow)
+                  1028ec04    00000016     freertos.am273x.r5f.ti-arm-clang.release.lib : list.obj (.text.vListInitialise)
+                  1028ec1a    00000014     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_commonStartOfFrameIntr0Isr)
+                  1028ec2e    00000014                                                 : csirx.obj (.text.CSIRX_commonStartOfFrameIntr1Isr)
+                  1028ec42    0000000e     --HOLE-- [fill = 0]
+                  1028ec50    00000014     cascade_lvds_stream.oer5f (.text.Cascade_LVDSStream_SwTriggerFrameDone)
+                  1028ec64    00000014     freertos.am273x.r5f.ti-arm-clang.release.lib : ClockP_freertos.obj (.text.ClockP_usecToTicks)
+                  1028ec78    00000014     drivers.am273x.r5f.ti-arm-clang.release.lib : edma.obj (.text.EDMA_dmaSetPaRAMEntry)
+                  1028ec8c    00000014                                                 : edma.obj (.text.EDMA_getRegionId)
+                  1028eca0    00000014     libmmwave_cascade_am273x.aer5f : mmwave.oer5f (.text.MMWave_encodeError)
+                  1028ecb4    00000014     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.text.SOC_rcmIsR5FInLockStepMode)
+                  1028ecc8    00000014     libsysbm.a : hostrename.c.obj (.text.strcpy)
+                  1028ecdc    00000004     --HOLE-- [fill = 0]
+                  1028ece0    00000012     libmmwave_cascade_am273x.aer5f : mmwave_osal.oer5f (.text.MMWave_osalSemWait)
+                  1028ecf2    0000000e     --HOLE-- [fill = 0]
+                  1028ed00    00000012     libmmwavelink_cascade_am273x.aer5f : rl_controller.oer5f (.text.rlAppendDummy)
+                  1028ed12    00000010     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx.obj (.text.CSIRX_commonCombinedEndOfFrameIsr)
+                  1028ed22    00000010                                                 : csirx.obj (.text.CSIRX_commonCombinedEndOfLineIsr)
+                  1028ed32    00000010                                                 : edma.obj (.text.EDMA_ccPaRAMEntry_init)
+                  1028ed42    0000000e     --HOLE-- [fill = 0]
+                  1028ed50    00000010     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.text.MMWave_closeLink)
+                  1028ed60    00000010                                    : mmwave_link_spi_22xx.oer5f (.text.MMWave_registerInterruptHandler)
+                  1028ed70    00000010     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.text.vPortYeildFromISR)
+                  1028ed80    00000010                                                  : tasks.obj (.text.vTaskInternalSetTimeOutState)
+                  1028ed90    00000010                                                  : tasks.obj (.text.vTaskSuspendAll)
+                  1028eda0    0000000e     common.oer5f (.text.Mmwave_populateDefaultCalibrationCfg)
+                  1028edae    00000002     --HOLE-- [fill = 0]
+                  1028edb0    0000000e     ti_pinmux_config.oer5f (.text.Pinmux_init)
+                  1028edbe    00000002     --HOLE-- [fill = 0]
+                  1028edc0    0000000e     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverGetPlatformId)
+                  1028edce    00000002     --HOLE-- [fill = 0]
+                  1028edd0    0000000c     libmmwave_cascade_am273x.aer5f : mmwave_osal.oer5f (.text.MMWave_osalMutexDelete)
+                  1028eddc    00000004     --HOLE-- [fill = 0]
+                  1028ede0    0000000c                                    : mmwave_osal.oer5f (.text.MMWave_osalMutexUnlock)
+                  1028edec    00000004     --HOLE-- [fill = 0]
+                  1028edf0    0000000c                                    : mmwave_osal.oer5f (.text.MMWave_osalSemDelete)
+                  1028edfc    00000004     --HOLE-- [fill = 0]
+                  1028ee00    0000000c                                    : mmwave_osal.oer5f (.text.MMWave_osalSemSignal)
+                  1028ee0c    00000004     --HOLE-- [fill = 0]
+                  1028ee10    0000000c     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.text.rlDriverConstructOutMsg)
+                  1028ee1c    00000004     --HOLE-- [fill = 0]
+                  1028ee20    0000000a                                        : rl_driver.oer5f (.text.rlDriverGetHandle)
+                  1028ee2a    00000006     --HOLE-- [fill = 0]
+                  1028ee30    00000006                                        : rl_controller.oer5f (.text.rlGetSubBlockId)
+                  1028ee36    0000000a     --HOLE-- [fill = 0]
+                  1028ee40    00000006                                        : rl_controller.oer5f (.text.rlGetSubBlockLen)
+                  1028ee46    0000000a     --HOLE-- [fill = 0]
+                  1028ee50    00000004     ti_board_open_close.oer5f (.text.Board_driversOpen)
+                  1028ee54    0000000c     --HOLE-- [fill = 0]
+                  1028ee60    00000004     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.text.MMWave_disableDevice)
+                  1028ee64    0000000c     --HOLE-- [fill = 0]
+                  1028ee70    00000004                                    : mmwave_listlib.oer5f (.text.MMWave_listGetHead)
+                  1028ee74    0000000c     --HOLE-- [fill = 0]
+                  1028ee80    00000004                                    : mmwave_listlib.oer5f (.text.MMWave_listGetNext)
+                  1028ee84    0000000c     --HOLE-- [fill = 0]
+                  1028ee90    00000004                                    : mmwave_link_spi_22xx.oer5f (.text.MMWave_spiClose)
+                  1028ee94    0000000c     --HOLE-- [fill = 0]
+                  1028eea0    00000004     libclang_rt.builtins.a : aeabi_div0.c.obj (.text.__aeabi_idiv0)
+                  1028eea4    0000000c     --HOLE-- [fill = 0]
+                  1028eeb0    00000004                            : aeabi_div0.c.obj (.text.__aeabi_ldiv0)
+                  1028eeb4    0000000c     --HOLE-- [fill = 0]
+                  1028eec0    00000004     libmmwavelink_cascade_am273x.aer5f : rl_device.oer5f (.text.rlDeviceAddDevices)
+                  1028eec4    0000000c     --HOLE-- [fill = 0]
+                  1028eed0    00000002     ti_board_open_close.oer5f (.text.Board_driversClose)
+                  1028eed2    0000000e     --HOLE-- [fill = 0]
+                  1028eee0    00000002     ti_board_config.oer5f (.text.Board_init)
+                  1028eee2    0000000e     --HOLE-- [fill = 0]
+                  1028eef0    00000002     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.text.MMWave_maskHostIRQ)
+                  1028eef2    0000000e     --HOLE-- [fill = 0]
+                  1028ef00    00000002                                    : mmwave_link_spi_22xx.oer5f (.text.MMWave_unmaskHostIRQ)
+                  1028ef02    0000000e     --HOLE-- [fill = 0]
+                  1028ef10    00000002     ti_dpl_config.oer5f (.text.putchar_)
+                  1028ef12    0000000e     --HOLE-- [fill = 0]
+
+.rodata    0    1028ef20    00006eb0     
+                  1028ef20    00001f00     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.rodata.metaImage)
+                  10290e20    000007b7     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.rodata.str1.1)
+                  102915d7    00000756                                                  : queue.obj (.rodata.str1.1)
+                  10291d2d    000006d7     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.rodata.str1.1)
+                  10292404    0000057b                                    : mmwave_fullcfg.oer5f (.rodata.str1.1)
+                  1029297f    000004df     ti_drivers_open_close.oer5f (.rodata.str1.1)
+                  10292e5e    000004b8     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.rodata.str1.1)
+                  10293316    0000046f     common.oer5f (.rodata.str1.1)
+                  10293785    00000462     main_mss.oer5f (.rodata.str1.1)
+                  10293be7    00000319     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.rodata.str1.1)
+                  10293f00    000002bc     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.rodata.str1.1)
+                  102941bc    0000028d     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff_transfer.obj (.rodata.str1.1)
+                  10294449    00000268                                                 : mibspi_v0.obj (.rodata.str1.1)
+                  102946b1    00000247     cascade_lvds_stream.oer5f (.rodata.str1.1)
+                  102948f8    00000240     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.rodata.gSocRcmADPLLJConfigTbl)
+                  10294b38    000001f4     cascade_csirx.oer5f (.rodata.str1.1)
+                  10294d2c    000001eb     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff.obj (.rodata.str1.1)
+                  10294f17    000001eb                                                 : mibspi_edma.obj (.rodata.str1.1)
+                  10295102    000001a0                                                 : edma.obj (.rodata.str1.1)
+                  102952a2    0000014a     freertos.am273x.r5f.ti-arm-clang.release.lib : HeapP_internal.obj (.rodata.str1.1)
+                  102953ec    00000129     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff_edma.obj (.rodata.str1.1)
+                  10295515    0000010a     freertos.am273x.r5f.ti-arm-clang.release.lib : ClockP_freertos_r5.obj (.rodata.str1.1)
+                  1029561f    00000001     --HOLE-- [fill = 0]
+                  10295620    00000101     libc.a : aeabi_ctype.S.obj (.rodata)
+                  10295721    000000da     freertos.am273x.r5f.ti-arm-clang.release.lib : SemaphoreP_freertos.obj (.rodata.str1.1)
+                  102957fb    000000c1                                                  : TimerP_rti.obj (.rodata.str1.1)
+                  102958bc    000000a1     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff_lvds.obj (.rodata.str1.1)
+                  1029595d    00000092     libmmwave_cascade_am273x.aer5f : mmwave.oer5f (.rodata.str1.1)
+                  102959ef    00000090     libtestlogger_am273x.aer5f : logger.oer5f (.rodata.str1.1)
+                  10295a7f    0000005d     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.rodata.str1.1)
+                  10295adc    00000058                                                  : HeapP_freertos.obj (.rodata.str1.1)
+                  10295b34    00000004                                                  : CacheP_armv7r.obj (.rodata.gCacheL1dCacheLineSize)
+                  10295b38    00000050                                                  : printf.obj (.rodata._ftoa.pow10)
+                  10295b88    00000050     ti_dpl_config.oer5f (.rodata.gMpuRegionConfig)
+                  10295bd8    00000040     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.rodata.gSocRcmXtalInfo)
+                  10295c18    0000002d     freertos.am273x.r5f.ti-arm-clang.release.lib : DebugP_log.obj (.rodata.str1.1)
+                  10295c45    00000022     libc.a : _printfi.c.obj (.rodata.str1.1)
+                  10295c67    00000001     --HOLE-- [fill = 0]
+                  10295c68    00000020     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_v0.obj (.rodata.cst16)
+                  10295c88    00000014                                                 : soc_rcm.obj (.rodata.gSocRcmRcssMcaspAuxClkSrcValMap)
+                  10295c9c    00000012     freertos.am273x.r5f.ti-arm-clang.release.lib : printf.obj (.rodata.str1.1)
+                  10295cae    00000002     libc.a : fputs.c.obj (.rodata.str1.1)
+                  10295cb0    00000010     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.rodata.cst16)
+                  10295cc0    00000010     drivers.am273x.r5f.ti-arm-clang.release.lib : soc_rcm.obj (.rodata.gSocRcmPeripheralClkSrcInfoMap)
+                  10295cd0    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmCpswClkSrcValMap)
+                  10295cde    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmCptsClkSrcValMap)
+                  10295cec    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmCsiRxClkSrcValMap)
+                  10295cfa    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmDssSciClkSrcValMap)
+                  10295d08    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmI2cClkSrcValMap)
+                  10295d16    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmMcanClkSrcValMap)
+                  10295d24    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmQspiClkSrcValMap)
+                  10295d32    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmRcssAtlClkSrcValMap)
+                  10295d40    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmRcssI2cClkSrcValMap)
+                  10295d4e    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmRcssSciClkSrcValMap)
+                  10295d5c    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmRcssSpiClkSrcValMap)
+                  10295d6a    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmRtiClkSrcValMap)
+                  10295d78    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmSciClkSrcValMap)
+                  10295d86    0000000e                                                 : soc_rcm.obj (.rodata.gSocRcmSpiClkSrcValMap)
+                  10295d94    0000000c     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.rodata..Lswitch.table.MMWave_computeCRC.36)
+                  10295da0    0000000c                                    : mmwave_link_common.oer5f (.rodata..Lswitch.table.MMWave_computeCRC)
+                  10295dac    0000000c     ti_dpl_config.oer5f (.rodata.gMpuConfig)
+                  10295db8    00000008     ti_dpl_config.oer5f (.rodata.gCacheConfig)
+                  10295dc0    00000004     freertos.am273x.r5f.ti-arm-clang.release.lib : CacheP_armv7r.obj (.rodata.gCacheL1pCacheLineSize)
+                  10295dc4    00000004                                                  : tasks.obj (.rodata.uxTopUsedPriority)
+                  10295dc8    00000008     --HOLE-- [fill = 0]
+
+.data      0    10295e00    00008a80     
+                  10295e00    00003000     libmmwave_cascade_am273x.aer5f : mmwave_link_common.oer5f (.data.advChirpLUTBuf)
+                  10298e00    000028cc     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff.obj (.data.gCbuffSession)
+                  1029b6cc    00000030     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.data..L_MergedGlobals.13)
+                  1029b6fc    00000004     libc.a : defs.c.obj (.data.__TI_ft_end)
+                  1029b700    00002000     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.data.gMmwHeapMem)
+                  1029d700    00000310     libmmwavelink_cascade_am273x.aer5f : rl_driver.oer5f (.data.rl_driverData)
+                  1029da10    00000200                                        : rl_driver.oer5f (.data.rl_rxMsg)
+                  1029dc10    00000200                                        : rl_driver.oer5f (.data.rl_txMsg)
+                  1029de10    00000120     ti_drivers_config.oer5f (.data.gEdmaAttrs)
+                  1029df30    000000f0     libc.a : defs.c.obj (.data._ftable)
+                  1029e020    000000d8     ti_drivers_open_close.oer5f (.data.gMibspiOpenParams)
+                  1029e0f8    000000d8     main_mss.oer5f (.data.gMmwCascadeMCB)
+                  1029e1d0    0000009c     ti_drivers_config.oer5f (.data.gMibspiAttrs)
+                  1029e26c    0000009c     drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_v0.obj (.data.gMibspiDrvObj)
+                  1029e308    00000090     ti_drivers_open_close.oer5f (.data.gCsirxCommonConfig)
+                  1029e398    00000088     ti_pinmux_config.oer5f (.data.gPinMuxMainDomainCfg)
+                  1029e420    00000078     libsysbm.a : host_device.c.obj (.data._device)
+                  1029e498    0000006c     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.data..L_MergedGlobals.35)
+                  1029e504    00000068     ti_drivers_open_close.oer5f (.data..L_MergedGlobals)
+                  1029e56c    00000050     libsysbm.a : host_device.c.obj (.data._stream)
+                  1029e5bc    00000044     ti_power_clock_config.oer5f (.data..L_MergedGlobals)
+                  1029e600    00000040     freertos.am273x.r5f.ti-arm-clang.release.lib : tasks.obj (.data..L_MergedGlobals)
+                  1029e640    0000003c     ti_drivers_open_close.oer5f (.data.gConfigCsirx0ContextConfig)
+                  1029e67c    0000003c     ti_drivers_open_close.oer5f (.data.gConfigCsirx1ContextConfig)
+                  1029e6b8    00000038     drivers.am273x.r5f.ti-arm-clang.release.lib : cbuff.obj (.data.gCBUFFInterfaceFxn)
+                  1029e6f0    00000030     ti_drivers_config.oer5f (.data.gCbuffAttrs)
+                  1029e720    00000030     drivers.am273x.r5f.ti-arm-clang.release.lib : csirx_soc.obj (.data.gCsirxHwAttrs_csirxA_r5f)
+                  1029e750    00000030                                                 : csirx_soc.obj (.data.gCsirxHwAttrs_csirxB_r5f)
+                  1029e780    00000018     ti_drivers_config.oer5f (.data.gEdmaConfig)
+                  1029e798    00000018     ti_drivers_config.oer5f (.data.gMibspiConfig)
+                  1029e7b0    00000014     ti_dpl_config.oer5f (.data.gClockConfig)
+                  1029e7c4    00000010     common.oer5f (.data..L_MergedGlobals)
+                  1029e7d4    00000010     freertos.am273x.r5f.ti-arm-clang.release.lib : port.obj (.data..L_MergedGlobals)
+                  1029e7e4    00000010     ti_drivers_config.oer5f (.data.gCsirxConfig)
+                  1029e7f4    0000000c     libtestlogger_am273x.aer5f : logger.oer5f (.data..L_MergedGlobals)
+                  1029e800    0000000c     ti_drivers_open_close.oer5f (.data.gEdmaParams)
+                  1029e80c    00000008     cascade_csirx.oer5f (.data..L_MergedGlobals)
+                  1029e814    00000008     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.data..L_MergedGlobals)
+                  1029e81c    00000008     libc.a : exit.c.obj (.data..L_MergedGlobals)
+                  1029e824    00000004            : aeabi_portable.c.obj (.data.__aeabi_errno)
+                  1029e828    00000008     freertos.am273x.r5f.ti-arm-clang.release.lib : PmuP_armv7r.obj (.data.pmu)
+                  1029e830    00000008                                                  : TaskP_freertos.obj (.data.vApplicationLoadHook.lastUpdateTime)
+                  1029e838    00000004     libc.a : _lock.c.obj (.data._lock)
+                  1029e83c    00000004            : _lock.c.obj (.data._unlock)
+                  1029e840    00000004     ti_drivers_config.oer5f (.data.gCbuffObjectPtr)
+                  1029e844    00000004     ti_drivers_config.oer5f (.data.gCsirxConfigNum)
+                  1029e848    00000004     freertos.am273x.r5f.ti-arm-clang.release.lib : DebugP_log.obj (.data.gDebugLogZone)
+                  1029e84c    00000004     ti_drivers_config.oer5f (.data.gEdmaConfigNum)
+                  1029e850    00000004     ti_dpl_config.oer5f (.data.gHwiConfig)
+                  1029e854    00000004     main_mss.oer5f (.data.gMCPILogMessageSize)
+                  1029e858    00000004     ti_drivers_config.oer5f (.data.gMibspiConfigNum)
+                  1029e85c    00000004     libmmwave_cascade_am273x.aer5f : mmwave_link_spi_22xx.oer5f (.data.gReadBufIndex)
+                  1029e860    00000004                                    : mmwave_link_spi_22xx.oer5f (.data.gWriteBufIndex)
+                  1029e864    00000004     freertos.am273x.r5f.ti-arm-clang.release.lib : timers.obj (.data.prvSampleTimeNow.xLastTime)
+                  1029e868    00000004                                                  : port.obj (.data.ulPortTaskHasFPUContext)
+                  1029e86c    00000001     cascade_csirx.oer5f (.data.MmwCascade_combinedEOLcallback.firstTimeFlag)
+                  1029e86d    00000001     libmmwave_cascade_am273x.aer5f : mmwave_fullcfg.oer5f (.data.isHeapMemAllocated)
+                  1029e86e    00000001     main_mss.oer5f (.data.configureTransfer.pingPongSwitchFlag)
+                  1029e86f    00000001     drivers.am273x.r5f.ti-arm-clang.release.lib : soc.obj (.data.isMapAvailable)
+                  1029e870    00000001     libc.a : fopen.c.obj (.data._search_fp.init)
+                  1029e871    00000001     main_mss.oer5f (.data.pmicRegRead)
+                  1029e872    00000002     --HOLE-- [fill = 0]
+                  1029e874    00000001     freertos.am273x.r5f.ti-arm-clang.release.lib : DebugP_freertos.obj (.data.gDebugLogIsInitDone)
+                  1029e875    00000003     --HOLE-- [fill = 0]
+                  1029e878    00000001     libc.a : memory.c.obj (.data.memory_is_initialized)
+                  1029e879    00000003     --HOLE-- [fill = 0]
+                  1029e87c    00000001     libsysbm.a : open.c.obj (.data.open.stream_init)
+                  1029e87d    00000003     --HOLE-- [fill = 0]
+
+.text.hwi 
+*          0    1029e880    00000740     
+                  1029e880    00000332     freertos.am273x.r5f.ti-arm-clang.release.lib : HwiP_armv7r_vim.obj (.text.hwi)
+                  1029ebb2    00000002     --HOLE-- [fill = 0]
+                  1029ebb4    000001ec                                                  : portASM.obj (.text.hwi)
+                  1029eda0    000001a8                                                  : HwiP_armv7r_handlers_freertos.obj (.text.hwi)
+                  1029ef48    00000070                                                  : HwiP_armv7r_asm.obj (.text.hwi)
+                  1029efb8    00000008                                                  : HwiP_armv7r_asm.obj (.tramp.HwiP_enableFIQ.1)
+
+.text.cache 
+*          0    1029efc0    00000430     
+                  1029efc0    00000340     freertos.am273x.r5f.ti-arm-clang.release.lib : CacheP_armv7r_asm.obj (.text.cache)
+                  1029f300    000000d8                                                  : CacheP_armv7r.obj (.text.cache)
+                  1029f3d8    00000008                                                  : CacheP_armv7r_asm.obj (.tramp.CacheP_invL1d.1)
+                  1029f3e0    00000008                                                  : CacheP_armv7r_asm.obj (.tramp.CacheP_enableL1p.1)
+                  1029f3e8    00000008                                                  : HwiP_armv7r_asm.obj (.tramp.HwiP_restore.2)
+
+.text.mpu 
+*          0    1029f3f0    00000208     
+                  1029f3f0    00000180     freertos.am273x.r5f.ti-arm-clang.release.lib : MpuP_armv7r.obj (.text.mpu)
+                  1029f570    00000078                                                  : MpuP_armv7r_asm.obj (.text.mpu)
+                  1029f5e8    00000008                                                  : MpuP_armv7r_asm.obj (.tramp.MpuP_isEnableAsm.1)
+                  1029f5f0    00000008                                                  : HwiP_armv7r_asm.obj (.tramp.HwiP_restore.3)
+
+.text.boot 
+*          0    1029f600    00000130     
+                  1029f600    000000fc     freertos.am273x.r5f.ti-arm-clang.release.lib : boot_armv7r_asm.obj (.text.boot)
+                  1029f6fc    0000001a                                                  : DebugP_log.obj (.text.boot)
+                  1029f716    0000000a     --HOLE-- [fill = 0]
+                  1029f720    0000000e     ti_dpl_config.oer5f (.text.boot)
+                  1029f72e    00000002     --HOLE-- [fill = 0]
+
+.text:abort 
+*          0    1029f730    00000008     
+                  1029f730    00000008     libc.a : exit.c.obj (.text:abort)
+
+.irqstack 
+*          0    1029f738    00000100     UNINITIALIZED
+                  1029f738    00000100     --HOLE--
+
+.fiqstack 
+*          0    1029f838    00000100     UNINITIALIZED
+                  1029f838    00000100     --HOLE--
+
+.svcstack 
+*          0    1029f938    00001000     UNINITIALIZED
+                  1029f938    00001000     --HOLE--
+
+.abortstack 
+*          0    102a0938    00000100     UNINITIALIZED
+                  102a0938    00000100     --HOLE--
+
+.undefinedstack 
+*          0    102a0a38    00000100     UNINITIALIZED
+                  102a0a38    00000100     --HOLE--
+
+.MCPILogBuffer 
+*          0    88004000    00002400     UNINITIALIZED
+                  88004000    00002400     main_mss.oer5f (.MCPILogBuffer)
+
+.l3ram     0    88000000    00004000     UNINITIALIZED
+                  88000000    00004000     main_mss.oer5f (.l3ram)
+
+MODULE SUMMARY
+
+       Module                                 code    ro data   rw data
+       ------                                 ----    -------   -------
+    obj_am273x/
+       main_mss.oer5f                         1978    1122      354246 
+       cascade_lvds_stream.oer5f              2316    583       0      
+       cascade_csirx.oer5f                    2152    500       9      
+       common.oer5f                           1282    1135      16     
+    +--+--------------------------------------+-------+---------+---------+
+       Total:                                 7728    3340      354271 
+                                                                       
+    obj_am273x/mssgenerated/
+       ti_drivers_config.oer5f                38      0         3176   
+       ti_drivers_open_close.oer5f            386     1247      620    
+       ti_dpl_config.oer5f                    74      100       24     
+       ti_power_clock_config.oer5f            112     0         68     
+       ti_pinmux_config.oer5f                 14      0         136    
+       ti_board_open_close.oer5f              6       0         0      
+       ti_board_config.oer5f                  2       0         0      
+    +--+--------------------------------------+-------+---------+---------+
+       Total:                                 632     1347      4024   
+                                                                       
+    /home/gtbldadm/nightlybuilds/mmwave_app_sdk/scripts/jenkins/../../ti/control/mmwave/lib/libmmwave_cascade_am273x.aer5f
+       mmwave_link_common.oer5f               9840    1775      14464  
+       mmwave_link_spi_22xx.oer5f             4796    9144      5192   
+       mmwave_fullcfg.oer5f                   3040    1403      8321   
+       mmwave.oer5f                           936     146       1268   
+       mmwave_osal.oer5f                      350     0         0      
+       mmwave_listlib.oer5f                   132     0         0      
+    +--+--------------------------------------+-------+---------+---------+
+       Total:                                 19094   12468     29245  
+                                                                       
+    /home/gtbldadm/nightlybuilds/mmwave_app_sdk/scripts/jenkins/../../ti/control/mmwavelink/lib/libmmwavelink_cascade_am273x.aer5f
+       rl_driver.oer5f                        7308    16        1808   
+       rl_sensor.oer5f                        4350    0         0      
+       rl_device.oer5f                        2060    0         0      
+       rl_controller.oer5f                    214     0         0      
+    +--+--------------------------------------+-------+---------+---------+
+       Total:                                 13932   16        1808   
+                                                                       
+    /home/gtbldadm/nightlybuilds/mmwave_app_sdk/scripts/jenkins/../../ti/utils/testlogger/lib/libtestlogger_am273x.aer5f
+       logger.oer5f                           722     144       12     
+    +--+--------------------------------------+-------+---------+---------+
+       Total:                                 722     144       12     
+                                                                       
+    /opt/ti/ccs1220/ccs/tools/compiler/ti-cgt-armllvm_2.1.2.LTS/lib/armv7r-ti-none-eabihf/c/libc.a
+       _printfi.c.obj                         3580    34        0      
+       memory.c.obj                           1172    0         5      
+       fopen.c.obj                            784     0         1      
+       fputs.c.obj                            472     2         0      
+       defs.c.obj                             0       0         404    
+       s_ceil.c.obj                           332     0         0      
+       setvbuf.c.obj                          324     0         0      
+       getdevice.c.obj                        308     0         0      
+       aeabi_ctype.S.obj                      0       257       0      
+       fclose.c.obj                           256     0         0      
+       snprintf.c.obj                         256     0         0      
+       fputc.c.obj                            232     0         0      
+       fseek.c.obj                            184     0         0      
+       fprintf.c.obj                          160     0         0      
+       printf.c.obj                           160     0         0      
+       _io_perm.c.obj                         156     0         0      
+       fflush.c.obj                           136     0         0      
+       atoi.c.obj                             112     0         0      
+       exit.c.obj                             92      0         8      
+       autoinit.c.obj                         80      0         0      
+       memccpy.c.obj                          72      0         0      
+       wcslen.c.obj                           32      0         0      
+       aeabi_portable.c.obj                   12      0         4      
+       _lock.c.obj                            4       0         8      
+    +--+--------------------------------------+-------+---------+---------+
+       Total:                                 8916    293       430    
+                                                                       
+    /opt/ti/ccs1220/ccs/tools/compiler/ti-cgt-armllvm_2.1.2.LTS/lib/armv7r-ti-none-eabihf/c/libsysbm.a
+       trgmsg.c.obj                           176     0         288    
+       open.c.obj                             288     0         1      
+       hostrename.c.obj                       208     0         0      
+       host_device.c.obj                      0       0         200    
+       hostopen.c.obj                         148     0         8      
+       hostlseek.c.obj                        152     0         0      
+       close.c.obj                            140     0         0      
+       hostread.c.obj                         132     0         0      
+       hostwrite.c.obj                        132     0         0      
+       hostunlink.c.obj                       108     0         0      
+       hostclose.c.obj                        96      0         0      
+       unlink.c.obj                           72      0         0      
+       lseek.c.obj                            52      0         0      
+       write.c.obj                            52      0         0      
+       memcpy32.S.obj                         28      0         0      
+       memset32.S.obj                         24      0         0      
+       remove.c.obj                           4       0         0      
+    +--+--------------------------------------+-------+---------+---------+
+       Total:                                 1812    0         497    
+                                                                       
+    /opt/ti/ccs1220/ccs/tools/compiler/ti-cgt-armllvm_2.1.2.LTS/lib/clang/14.0.6/lib/armv7r-ti-none-eabihf/libclang_rt.builtins.a
+       udivsi3.S.obj                          464     0         0      
+       udivmoddi4.S.obj                       280     0         0      
+       aeabi_uldivmod.S.obj                   36      0         0      
+       aeabi_memset.S.obj                     28      0         0      
+       aeabi_memcpy.S.obj                     12      0         0      
+       aeabi_div0.c.obj                       8       0         0      
+    +--+--------------------------------------+-------+---------+---------+
+       Total:                                 828     0         0      
+                                                                       
+    /opt/ti/mcu_plus_sdk_am273x_08_05_00_24/source/drivers/lib/drivers.am273x.r5f.ti-arm-clang.release.lib
+       cbuff.obj                              2150    491       10500  
+       mibspi_v0.obj                          4496    648       156    
+       edma.obj                               3832    416       0      
+       csirx.obj                              3908    0         0      
+       soc_rcm.obj                            1720    1665      0      
+       mibspi_edma.obj                        1948    491       0      
+       cbuff_transfer.obj                     860     653       0      
+       cbuff_lvds.obj                         1050    161       0      
+       cbuff_edma.obj                         848     297       0      
+       soc.obj                                482     0         17     
+       crc.obj                                436     0         0      
+       gpio_v1.obj                            266     0         0      
+       mibspi_soc.obj                         212     0         0      
+       csirx_soc.obj                          0       0         96     
+       pinmux.obj                             46      0         0      
+    +--+--------------------------------------+-------+---------+---------+
+       Total:                                 22254   4822      10769  
+                                                                       
+    /opt/ti/mcu_plus_sdk_am273x_08_05_00_24/source/kernel/freertos/lib/freertos.am273x.r5f.ti-arm-clang.release.lib
+       tasks.obj                              3244    1979      812    
+       port.obj                               328     93        5420   
+       queue.obj                              2862    1878      256    
+       HwiP_armv7r_vim.obj                    818     0         4108   
+       printf.obj                             3658    98        0      
+       timers.obj                             1068    700       396    
+       CacheP_armv7r_asm.obj                  848     0         0      
+       HeapP_internal.obj                     500     330       0      
+       SemaphoreP_freertos.obj                332     218       80     
+       ClockP_freertos_r5.obj                 304     266       0      
+       TimerP_rti.obj                         368     193       0      
+       portASM.obj                            492     0         0      
+       HwiP_armv7r_handlers_freertos.obj      424     0         4      
+       TaskP_freertos.obj                     232     0         168    
+       MpuP_armv7r.obj                        384     0         0      
+       ClockP_freertos.obj                    224     0         56     
+       DebugP_freertos.obj                    104     0         153    
+       boot_armv7r_asm.obj                    252     0         0      
+       CacheP_armv7r.obj                      216     8         0      
+       DebugP_log.obj                         146     45        4      
+       HeapP_freertos.obj                     106     88        0      
+       HwiP_armv7r_asm.obj                    152     0         0      
+       list.obj                               136     0         0      
+       MpuP_armv7r_asm.obj                    128     0         0      
+       PmuP_armv7r.obj                        92      0         8      
+       HwiP_armv7r_vectors_freertos_asm.obj   64      0         0      
+       PmuP_armv7r_asm.obj                    56      0         0      
+       CpuId_armv7r.obj                       26      0         0      
+       heap_3.obj                             26      0         0      
+       boot_armv7r.obj                        24      0         0      
+       CpuId_armv7r_asm.obj                   12      0         0      
+       AddrTranslateP_null.obj                2       0         0      
+    +--+--------------------------------------+-------+---------+---------+
+       Total:                                 17628   5896      11465  
+                                                                       
+       Heap:                                  0       0         4096   
+       Stack:                                 0       0         8192   
+    +--+--------------------------------------+-------+---------+---------+
+       Grand Total:                           93546   28326     424809 
+
+VENEERS
+
+callee name               veneer name
+   callee addr  veneer addr  call addr  call info
+--------------  -----------  ---------  ----------------
+HwiP_enableFIQ            $Ven$TA$L$PI$$HwiP_enableFIQ
+   1029ef78     1029efb8     1029eb8a   freertos.am273x.r5f.ti-arm-clang.release.lib : HwiP_armv7r_vim.obj (.text.hwi)
+CacheP_invL1d             $Ven$TA$L$PI$$CacheP_invL1d
+   1029f030     1029f3d8     1029f3d4   freertos.am273x.r5f.ti-arm-clang.release.lib : CacheP_armv7r.obj (.text.cache)
+CacheP_enableL1p          $Ven$TA$L$PI$$CacheP_enableL1p
+   1029f018     1029f3e0     1029f3ae   freertos.am273x.r5f.ti-arm-clang.release.lib : CacheP_armv7r.obj (.text.cache)
+HwiP_restore              $Ven$TA$L$PI$$HwiP_restore
+   1029ef88     1029f3e8     1029f38e   freertos.am273x.r5f.ti-arm-clang.release.lib : CacheP_armv7r.obj (.text.cache)
+MpuP_isEnableAsm          $Ven$TA$L$PI$$MpuP_isEnableAsm
+   1029f5c0     1029f5e8     1029f50c   freertos.am273x.r5f.ti-arm-clang.release.lib : MpuP_armv7r.obj (.text.mpu)
+HwiP_restore              $Ven$TA$L$PI$$HwiP_restore
+   1029ef88     1029f5f0     1029f4d6   freertos.am273x.r5f.ti-arm-clang.release.lib : MpuP_armv7r.obj (.text.mpu)
+                             1029f506                                                : MpuP_armv7r.obj (.text.mpu)
+HwiP_restore              $Ven$TA$L$PI$$HwiP_restore
+   1029ef88     10287ef8     1028e7d6   drivers.am273x.r5f.ti-arm-clang.release.lib : mibspi_v0.obj (.text.MIBSPI_resetTransactionState)
+__aeabi_memcpy            $Ven$TA$L$PI$$__aeabi_memcpy
+   10286938     10288954     1028e536   freertos.am273x.r5f.ti-arm-clang.release.lib : queue.obj (.text.prvCopyDataFromQueue)
+HwiP_enable               $Ven$TA$L$PI$$HwiP_enable
+   1029ef68     10288dd8     1028d706   ti_dpl_config.oer5f (.text.Dpl_init)
+PmuP_enableCounters       $Ven$TA$L$PI$$PmuP_enableCounters
+   1028e05c     10289238     1028c734   freertos.am273x.r5f.ti-arm-clang.release.lib : PmuP_armv7r.obj (.text.pmu)
+
+[10 trampolines]
+[11 trampoline calls]
+
+
+GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
+
+address   name                                 
+-------   ----                                 
+1027a2e3  AddrTranslateP_getLocalAddr          
+1028eed1  Board_driversClose                   
+1028ee51  Board_driversOpen                    
+1028eee1  Board_init                           
+1029f730  C$$EXIT                              
+1028c998  C$$IO$$                              
+10284595  CBUFF_activateSession                
+10286c59  CBUFF_close                          
+10286089  CBUFF_closeEDMA                      
+1028df5d  CBUFF_closeLVDS                      
+10281bed  CBUFF_configEDMA                     
+10284731  CBUFF_createSession                  
+1027c2ad  CBUFF_deinitLVDS                     
+1028e99d  CBUFF_finalizeLVDSLinkListParams     
+10285069  CBUFF_initLVDS                       
+1028acd5  CBUFF_initLVDSLinkListParams         
+10281765  CBUFF_open                           
+10282ab1  CBUFF_openLVDS                       
+10288c61  CBUFF_setVC                          
+1028ad59  CBUFF_setupTransfer                  
+102856f1  CBUFF_setup_USER                     
+1028ea8f  CBUFF_shutdownTransfer               
+1028e0ad  CRC_channelReset                     
+10287435  CRC_configure                        
+1028e2a9  CRC_getPSASig                        
+1028e2d1  CRC_getPSASigRegAddr                 
+1028d201  CRC_initialize                       
+88002000  CSIA_PingBuf                         
+88000000  CSIA_PongBuf                         
+88003000  CSIB_PingBuf                         
+88001000  CSIB_PongBuf                         
+102880ad  CSIRX_close                          
+1028e7db  CSIRX_commonClearAllIntr             
+1028e6bb  CSIRX_commonDisable                  
+1028e6db  CSIRX_commonEnable                   
+1028ba51  CSIRX_commonGetPendingIntr           
+1027ecc9  CSIRX_commonSetConfig                
+1028e7f7  CSIRX_complexioClearAllIntr          
+1028e6fb  CSIRX_complexioDeassertReset         
+10289515  CSIRX_complexioGetPendingIntr        
+1028e5f1  CSIRX_complexioGetPowerStatus        
+1028e613  CSIRX_complexioIsResetDone           
+102828b5  CSIRX_complexioSetConfig             
+1028e71b  CSIRX_complexioSetPowerCommand       
+1028e2f9  CSIRX_contextClearAllIntr            
+1028228b  CSIRX_contextDisable                 
+102837fb  CSIRX_contextEnable                  
+1028c795  CSIRX_contextGetPendingIntr          
+10283275  CSIRX_contextSetConfig               
+1028d595  CSIRX_contextSetPingPongAddress      
+10283801  CSIRX_dphySetConfig                  
+1028e489  CSIRX_init                           
+102895c9  CSIRX_open                           
+1028b315  CSIRX_reset                          
+1028e9b7  CSL_armR5GetCpuID                    
+102807b4  CSL_armR5ReadMpidrReg                
+1029f2d0  CacheP_configForceWrThru             
+1029f359  CacheP_disable                       
+1029efc0  CacheP_disableL1d                    
+1029efe8  CacheP_disableL1p                    
+1029f393  CacheP_enable                        
+1029f000  CacheP_enableL1d                     
+1029f018  CacheP_enableL1p                     
+1029f2c4  CacheP_getCacheLevelInfo             
+1029f28c  CacheP_getEnabled                    
+1029f301  CacheP_init                          
+1029f3b3  CacheP_inv                           
+1029f030  CacheP_invL1d                        
+1029f0a4  CacheP_invL1dAll                     
+1029f068  CacheP_invL1p                        
+1029f0ac  CacheP_invL1pAll                     
+1029f2f0  CacheP_setDLFO                       
+1029f0b4  CacheP_wb                            
+1029f12c  CacheP_wbAll                         
+1029f0f0  CacheP_wbInv                         
+1029f1d4  CacheP_wbInvAll                      
+1029f1ec  CacheP_wbInvAllAsm                   
+1028a881  Cascade_LVDSStreamInit               
+1028a0d1  Cascade_LVDSStreamSwConfig           
+1027e5a1  Cascade_LVDSStream_EDMAInit          
+1028d03d  ClockP_getTimeUsec                   
+1027ff1d  ClockP_getTimerCount                 
+10285bdd  ClockP_init                          
+1028e4ad  ClockP_sleep                         
+10280a7d  ClockP_timerClearOverflowInt         
+1028e1fd  ClockP_timerTickIsr                  
+1028ec65  ClockP_usecToTicks                   
+1028dd29  ClockP_usleep                        
+1028e04c  CycleCounterP_getCount32             
+1028c6dd  CycleCounterP_init                   
+1028c6ed  CycleCounterP_nsToTicks              
+1028c715  CycleCounterP_reset                  
+1028e73d  DebugP_logZoneEnable                 
+1028d6d1  Dpl_init                             
+1028c681  Drivers_close                        
+10285e41  Drivers_open                         
+1027ddb9  EDMA_allocDmaChannel                 
+1027f639  EDMA_allocParam                      
+102801f9  EDMA_allocTcc                        
+1028ed33  EDMA_ccPaRAMEntry_init               
+1028bd6d  EDMA_close                           
+1028dd5d  EDMA_clrMissEvtRegion                
+1028b393  EDMA_configureChannelRegion          
+1028cbf1  EDMA_disableChInShadowRegRegion      
+1028e321  EDMA_disableTccInShadowRegRegion     
+1028bc91  EDMA_disableTransferRegion           
+1028ec79  EDMA_dmaSetPaRAMEntry                
+1028e109  EDMA_enableChInShadowRegRegion       
+1028e3e9  EDMA_enableTccInShadowRegRegion      
+1028bcff  EDMA_enableTransferRegion            
+102892f9  EDMA_freeChannelRegion               
+10282069  EDMA_freeDmaChannel                  
+10283089  EDMA_freeParam                       
+10283625  EDMA_freeTcc                         
+1028d5d5  EDMA_getBaseAddr                     
+1028e229  EDMA_getHandle                       
+1028ec8d  EDMA_getRegionId                     
+10280ff5  EDMA_init                            
+1028e635  EDMA_linkChannel                     
+1028d4d5  EDMA_mapChToEvtQ                     
+10286d55  EDMA_open                            
+10288d1d  EDMA_registerIntr                    
+1028e40f  EDMA_setPaRAM                        
+1028def9  EDMA_unmapChToEvtQ                   
+10288645  EDMA_unregisterIntr                  
+1029e604  FreeRTOS_errno                       
+1028e9d1  GPIO_clearInterrupt                  
+1028e9eb  GPIO_enableInterrupt                 
+1027b0c5  GPIO_getHighLowLevelPendingInterrupt 
+1028dfbd  GPIO_markHighLowLevelInterrupt       
+10285aab  GPIO_moduleEnable                    
+1028eaa7  GPIO_pinRead                         
+1028ebd9  GPIO_pinWriteHigh                    
+1028ebef  GPIO_pinWriteLow                     
+1028e657  GPIO_setDirMode                      
+1028e137  GPIO_setTrigType                     
+1028c434  HOSTclose                            
+1028a20c  HOSTlseek                            
+1028a478  HOSTopen                             
+1028aee4  HOSTread                             
+10289bcc  HOSTrename                           
+1028bdd8  HOSTunlink                           
+1028af68  HOSTwrite                            
+1028e813  HeapP_alloc                          
+1028dd91  HeapP_construct                      
+1028ea05  HeapP_free                           
+1029e92d  HwiP_Params_init                     
+1029e8e5  HwiP_clearInt                        
+1029e941  HwiP_construct                       
+1029ef23  HwiP_data_abort_handler              
+1029ea69  HwiP_destruct                        
+1029ef48  HwiP_disable                         
+1029ef58  HwiP_disableFIQ                      
+1029e8a9  HwiP_disableInt                      
+1029efa0  HwiP_disableVIC                      
+1029ef68  HwiP_enable                          
+1029ef78  HwiP_enableFIQ                       
+1029e881  HwiP_enableInt                       
+1029ef90  HwiP_enableVIC                       
+1029ee31  HwiP_fiq_handler                     
+1029efb0  HwiP_getCPSR                         
+1029eba1  HwiP_inISR                           
+1029eae1  HwiP_init                            
+1029ec5c  HwiP_irq_handler                     
+1029eda1  HwiP_irq_handler_c                   
+1029e905  HwiP_post                            
+1029eefd  HwiP_prefetch_abort_handler          
+1029eeb1  HwiP_reserved_handler                
+1029ef88  HwiP_restore                         
+1029e8d9  HwiP_restoreInt                      
+1029ebec  HwiP_svc_handler                     
+1029eed7  HwiP_undefined_handler               
+1029e7f8  MCPI_FailSignature                   
+1029e7f4  MCPI_Result                          
+88004000  MCPI_logMessage                      
+102804e1  MCPI_setFeatureTestResult            
+10286829  MIBSPI_close                         
+10286b55  MIBSPI_dmaDoneCb                     
+10283ef1  MIBSPI_edmaAllocChResource           
+10286e51  MIBSPI_edmaFreeChResource            
+1028df2b  MIBSPI_edmaOpen                      
+1027e939  MIBSPI_edmaTransfer                  
+1028b68d  MIBSPI_init                          
+1027bbad  MIBSPI_open                          
+10287fd9  MIBSPI_socMemInit                    
+102824a9  MIBSPI_transfer                      
+10286f51  MMWave_addChirp                      
+10288321  MMWave_addPhaseShiftChirp            
+10287701  MMWave_addProfile                    
+1027d511  MMWave_asyncEventHandler             
+1028d251  MMWave_close                         
+1028ed51  MMWave_closeLink                     
+10281521  MMWave_computeCRC                    
+1028c4a1  MMWave_config                        
+10278d01  MMWave_configLink                    
+1028e371  MMWave_decodeError                   
+1028c221  MMWave_deinit                        
+1028be51  MMWave_deinitLink                    
+10285831  MMWave_deviceGetVersion              
+1028eca1  MMWave_encodeError                   
+1028c621  MMWave_execute                       
+10287151  MMWave_executeLink                   
+10288181  MMWave_getAdvChirpHandle             
+10287e21  MMWave_getBpmChirpHandle             
+10288ba1  MMWave_getChirpCfg                   
+10287051  MMWave_getChirpHandle                
+10289db1  MMWave_getNumAdvChirpParams          
+10289e51  MMWave_getNumBpmChirp                
+1028a761  MMWave_getNumChirps                  
+10289ef1  MMWave_getNumPhaseShiftChirp         
+10289f91  MMWave_getNumProfiles                
+10289c71  MMWave_getPhaseShiftChirpCfg         
+10287f01  MMWave_getPhaseShiftChirpHandle      
+10289d11  MMWave_getProfileCfg                 
+10288891  MMWave_getProfileHandle              
+10288961  MMWave_init                          
+1028b781  MMWave_initCRC                       
+10289891  MMWave_initLink                      
+1028d611  MMWave_internalLinkSync              
+1028ea21  MMWave_listAdd                       
+1028d2a1  MMWave_listCat                       
+1028ee71  MMWave_listGetHead                   
+1028ee81  MMWave_listGetNext                   
+1028e831  MMWave_listRemove                    
+1028c291  MMWave_open                          
+1027b0d1  MMWave_openLink                      
+1028b591  MMWave_osalMutexCreate               
+1028edd1  MMWave_osalMutexDelete               
+1028eac1  MMWave_osalMutexLock                 
+1028ede1  MMWave_osalMutexUnlock               
+1028aab1  MMWave_osalSemCreate                 
+1028edf1  MMWave_osalSemDelete                 
+1028ee01  MMWave_osalSemSignal                 
+1028ece1  MMWave_osalSemWait                   
+10288de1  MMWave_spawn                         
+1028a3e1  MMWave_start                         
+10282cb1  MMWave_startLink                     
+1028d2f1  MMWave_stop                          
+10289241  MMWave_stopLink                      
+1027d9b1  MmwCascade_CSIConfig                 
+102883f1  MmwCascade_combinedEOLcallback       
+1028b101  MmwCascade_csirxClose                
+1028d091  MmwCascade_csirxCombinedEOFcallback  
+10282291  MmwCascade_csirxCommonCallback       
+1028bad1  MmwCascade_csirxInit                 
+1028d0e1  MmwCascade_csirxOpen                 
+1027e1c1  MmwCascade_mmWaveTest                
+1028d801  Mmwave_ctrlTask                      
+1028e171  Mmwave_eventFxn                      
+1028eda1  Mmwave_populateDefaultCalibrationCfg 
+1027ddc1  Mmwave_populateDefaultChirpControlCfg
+1028a171  Mmwave_populateDefaultOpenCfg        
+1029f3f1  MpuP_RegionAttrs_init                
+1029f4db  MpuP_disable                         
+1029f570  MpuP_disableAsm                      
+1029f588  MpuP_disableBRAsm                    
+1029f4a3  MpuP_enable                          
+1029f598  MpuP_enableAsm                       
+1029f5b0  MpuP_enableBRAsm                     
+1029f511  MpuP_init                            
+1029f50d  MpuP_isEnable                        
+1029f5c0  MpuP_isEnableAsm                     
+1029f3ff  MpuP_setRegion                       
+1029f5d4  MpuP_setRegionAsm                    
+1028e19f  Pinmux_config                        
+1028edb1  Pinmux_init                          
+1028e074  PmuP_clearOverflowStatus             
+1028e064  PmuP_disableCounters                 
+1028e05c  PmuP_enableCounters                  
+1028e06c  PmuP_getOverflowStatus               
+1028e054  PmuP_setup                           
+1028bb41  PowerClock_init                      
+1028c079  SOC_controlModuleLockMMR             
+1028afed  SOC_controlModuleUnlockMMR           
+1027c987  SOC_getSelfCpuClk                    
+10280d3d  SOC_moduleClockEnable                
+1028151d  SOC_moduleSetClockFrequency          
+1028e84d  SOC_rcmGetR5Clock                    
+1028ecb5  SOC_rcmIsR5FInLockStepMode           
+10281295  SOC_rcmSetPeripheralClock            
+10287aa5  SOC_virtToPhy                        
+1028c2f9  SemaphoreP_constructBinary           
+1028d409  SemaphoreP_constructMutex            
+10285d05  SemaphoreP_destruct                  
+1028caa5  SemaphoreP_pend                      
+1028ce15  SemaphoreP_post                      
+1028e461  System_init                          
+1028e964  TI_memcpy_small                      
+1028ebc0  TI_memset_small                      
+10289679  TaskP_loadUpdateAll                  
+1028e4d1  TimerP_Params_init                   
+102843e5  TimerP_clearOverflowInt              
+1028eaf9  TimerP_getCount                      
+102819a5  TimerP_getReloadCount                
+102861a1  TimerP_setup                         
+10281e25  TimerP_start                         
+10275290  _CIOBUF_                             
+1028c845  _DebugP_assert                       
+1029f6fd  _DebugP_assertNoLog                  
+1028c0e1  _DebugP_logZone                      
+102a0a38  __ABORT_STACK_END                    
+00000100  __ABORT_STACK_SIZE                   
+102a0938  __ABORT_STACK_START                  
+10275d00  __BSS_END                            
+10220000  __BSS_START                          
+10275290  __CIOBUF_                            
+1029f938  __FIQ_STACK_END                      
+00000100  __FIQ_STACK_SIZE                     
+1029f838  __FIQ_STACK_START                    
+1029f838  __IRQ_STACK_END                      
+00000100  __IRQ_STACK_SIZE                     
+1029f738  __IRQ_STACK_START                    
+10278d00  __STACK_END                          
+00002000  __STACK_SIZE                         
+102a0938  __SVC_STACK_END                      
+00001000  __SVC_STACK_SIZE                     
+1029f938  __SVC_STACK_START                    
+00001000  __SYSMEM_SIZE                        
+UNDEFED   __TI_CINIT_Base                      
+UNDEFED   __TI_CINIT_Limit                     
+UNDEFED   __TI_Handler_Table_Base              
+UNDEFED   __TI_Handler_Table_Limit             
+1028cba0  __TI_auto_init_nobinit_nopinit       
+1028c89c  __TI_cleanup                         
+1029e81c  __TI_cleanup_ptr                     
+102893ac  __TI_closefile                       
+1028ab3c  __TI_doflush                         
+1029e820  __TI_dtors_ptr                       
+1029b6fc  __TI_ft_end                          
+ffffffff  __TI_pprof_out_hndl                  
+1027a2e4  __TI_printfi_nofloat                 
+ffffffff  __TI_prof_data_size                  
+ffffffff  __TI_prof_data_start                 
+1028c8f4  __TI_readmsg                         
+00000000  __TI_static_base__                   
+102755b0  __TI_tmpnams                         
+1028c94c  __TI_writemsg                        
+1028a02c  __TI_wrt_ok                          
+102a0b38  __UNDEFINED_STACK_END                
+00000100  __UNDEFINED_STACK_SIZE               
+102a0a38  __UNDEFINED_STACK_START              
+10295620  __aeabi_ctype_table_                 
+10295620  __aeabi_ctype_table_C                
+1029e824  __aeabi_errno                        
+1027e1b4  __aeabi_errno_addr                   
+1028eea0  __aeabi_idiv0                        
+1028eeb0  __aeabi_ldiv0                        
+1028e990  __aeabi_memclr                       
+1028e990  __aeabi_memclr4                      
+1028e990  __aeabi_memclr8                      
+10286938  __aeabi_memcpy                       
+10286938  __aeabi_memcpy4                      
+10286938  __aeabi_memcpy8                      
+1028e980  __aeabi_memset                       
+1028e980  __aeabi_memset4                      
+1028e980  __aeabi_memset8                      
+10283454  __aeabi_uidiv                        
+1028e5cc  __aeabi_uldivmod                     
+ffffffff  __binit__                            
+1029f721  __mpu_init                           
+10276d00  __stack                              
+102862b8  __udivmoddi4                         
+10283454  __udivsi3                            
+1029f624  _c_int00                             
+1029f600  _c_int00_sbl                         
+1029e420  _device                              
+1029df30  _ftable                              
+1029e838  _lock                                
+1028362c  _nop                                 
+1029e56c  _stream                              
+10275d00  _sys_memory                          
+UNDEFED   _system_post_cinit                   
+1028eb11  _system_pre_init                     
+1029e83c  _unlock                              
+00000000  _vectors                             
+1029f730  abort                                
+10295e00  advChirpLUTBuf                       
+10283b80  aligned_alloc                        
+1028bbb0  atoi                                 
+ffffffff  binit                                
+10285310  ceil                                 
+10285310  ceill                                
+1028a998  close                                
+1028a641  configureTransfer                    
+1029e80c  csirx0CommonCallBackArg              
+1029e810  csirx1CommonCallBackArg              
+1028a50d  eTaskGetState                        
+1028caf8  exit                                 
+1028cc8c  fclose                               
+1028bebc  finddevice                           
+10287248  fopen                                
+1028a2a4  fprintf                              
+102878d4  fputc                                
+1028409c  fputs                                
+10283d38  free                                 
+1028582c  fseek                                
+10289460  fseeko                               
+10275ce8  gAppTask                             
+102758a0  gAppTaskObj                          
+10220000  gAppTskStackMain                     
+1029e6b8  gCBUFFInterfaceFxn                   
+10275ccc  gCSIRXErrorCode                      
+10275160  gCSIRXState                          
+10295db8  gCacheConfig                         
+10295b34  gCacheL1dCacheLineSize               
+10295dc0  gCacheL1pCacheLineSize               
+1029e6f0  gCbuffAttrs                          
+10275b44  gCbuffObject                         
+1029e840  gCbuffObjectPtr                      
+10298e00  gCbuffSession                        
+1029e7b0  gClockConfig                         
+10273008  gClockCtrl                           
+1029e640  gConfigCsirx0ContextConfig           
+1029e67c  gConfigCsirx1ContextConfig           
+10275cec  gCsiConfigTask                       
+1027592c  gCsiConfigTaskObj                    
+10240000  gCsiRxCfgTskStack                    
+1029e308  gCsirxCommonConfig                   
+1029e520  gCsirxComplexioConfig                
+1029e7e4  gCsirxConfig                         
+1029e844  gCsirxConfigNum                      
+1029e508  gCsirxDphyConfig                     
+1029e720  gCsirxHwAttrs_csirxA_r5f             
+1029e750  gCsirxHwAttrs_csirxB_r5f             
+1029e504  gCsirxPhyEnable                      
+1029e848  gDebugLogZone                        
+1029e780  gEdmaConfig                          
+1029e84c  gEdmaConfigNum                       
+10275cb4  gEdmaHandle                          
+1029e800  gEdmaParams                          
+10275c64  gGpioHwiObject                       
+1029e850  gHwiConfig                           
+10270000  gHwiCtrl                             
+1029e854  gMCPILogMessageSize                  
+10273e7c  gMMWave_MCB                          
+1029e798  gMibspiConfig                        
+1029e858  gMibspiConfigNum                     
+10275cc0  gMibspiHandle                        
+1029e020  gMibspiOpenParams                    
+1029e0f8  gMmwCascadeMCB                       
+10275cf0  gMmwCtrlTask                         
+102759b8  gMmwCtrlTaskObj                      
+10260000  gMmwCtrlTskStack                     
+10295dac  gMpuConfig                           
+10295b88  gMpuRegionConfig                     
+10272008  gReadBuf                             
+1029e85c  gReadBufIndex                        
+10275c14  gRovDummyQueue                       
+1029e5bc  gSocModules                          
+1029e5d0  gSocModulesClockFrequency            
+10295cc0  gSocRcmPeripheralClkSrcInfoMap       
+10275650  gTaskP_ctrl                          
+10274770  gWriteBuf                            
+1029e860  gWriteBufIndex                       
+102884b8  getdevice                            
+1029e86f  isMapAvailable                       
+1028ddf8  lseek                                
+1028b191  main                                 
+1027e594  malloc                               
+10283b80  memalign                             
+1028d128  memccpy                              
+10285f68  open                                 
+10275cd4  parmbuf                              
+1029e7c4  phaseShifChirpCfgDev1                
+1029e7cc  phaseShifChirpCfgDev2                
+1029e871  pmicRegRead                          
+1028a33c  printf                               
+1028ef11  putchar_                             
+1028de2c  puts                                 
+10287615  pvHeapMalloc                         
+1028eb41  pvTaskIncrementMutexHeldCount        
+1029e600  pxCurrentTCB                         
+1028abc5  pxPortInitialiseStack                
+102865fc  remove                               
+1028ed01  rlAppendDummy                        
+1028cd31  rlAppendSubBlock                     
+10282ea1  rlDevSetFillLUTBuff                  
+1028eec1  rlDeviceAddDevices                   
+1028c361  rlDeviceAdvFrameConfigApply          
+1028b071  rlDeviceFileDownload                 
+1028c3d1  rlDeviceFrameConfigApply             
+10289181  rlDeviceGetVersion                   
+1028b611  rlDevicePowerOff                     
+10284d91  rlDevicePowerOn                      
+1028d751  rlDeviceRfStart                      
+1028ce61  rlDeviceSetCsi2Config                
+1028ceb1  rlDeviceSetDataFmtConfig             
+1028cf01  rlDeviceSetDataPathClkConfig         
+1028cf51  rlDeviceSetDataPathConfig            
+1028d841  rlDeviceSetHsiClk                    
+1028cfa1  rlDeviceSetLaneConfig                
+1028cff1  rlDeviceSetMiscConfig                
+10283631  rlDriverAddDevice                    
+10282071  rlDriverCmdInvoke                    
+1027c991  rlDriverCmdSendRetry                 
+102897e1  rlDriverConstructInMsg               
+1028ee11  rlDriverConstructOutMsg              
+10285ab1  rlDriverDeInit                       
+102819b1  rlDriverExecuteGetApi                
+10281e31  rlDriverExecuteSetApi                
+1028eb61  rlDriverFillPayload                  
+1028ee21  rlDriverGetHandle                    
+1028edc1  rlDriverGetPlatformId                
+1028b801  rlDriverHostIrqHandler               
+1027f641  rlDriverInit                         
+1028ea41  rlDriverIsDeviceMapValid             
+1027c2b1  rlDriverMsgRead                      
+10283091  rlDriverMsgReadSpawnCtx              
+1028d881  rlEnableContMode                     
+1028bf31  rlGetSubBlock                        
+1028ee31  rlGetSubBlockId                      
+1028ee41  rlGetSubBlockLen                     
+10285d11  rlRfCalibDataRestore                 
+1028d8c1  rlRfInit                             
+1028d901  rlRfInitCalibConfig                  
+10285971  rlRfPhShiftCalibDataRestore          
+1028d941  rlRfRunTimeCalibConfig               
+1028d981  rlRfSetCalMonFreqLimitConfig         
+1028d9c1  rlRfSetCalMonTimeUnitConfig          
+1028da01  rlRfSetDeviceCfg                     
+1028da41  rlRfSetLdoBypassConfig               
+1028da81  rlRfSetMiscConfig                    
+10280d41  rlRfSetPhaseShiftConfig              
+1028dac1  rlSensorStart                        
+1028db01  rlSensorStop                         
+1028db41  rlSetAdcOutConfig                    
+1028db81  rlSetAdvChirpConfig                  
+1028cb51  rlSetAdvFrameConfig                  
+1028dbc1  rlSetBpmCommonConfig                 
+1028dc01  rlSetChannelConfig                   
+10280201  rlSetChirpConfig                     
+1028dc41  rlSetContModeConfig                  
+1028c5c1  rlSetFrameConfig                     
+1028dc81  rlSetLowPowerModeConfig              
+10286941  rlSetMultiAdvChirpLUTConfig          
+1027f031  rlSetMultiBpmChirpConfig             
+102899e1  rlSetProfileConfig                   
+1029da10  rl_rxMsg                             
+1029dc10  rl_txMsg                             
+102855ac  setvbuf                              
+1028b878  snprintf                             
+10285aa3  uiPortGetRunTimeCounterValue         
+1029e7d4  ulCriticalNesting                    
+1029e7dc  ulPortInterruptNesting               
+1029e7e0  ulPortSchedularRunning               
+1029e868  ulPortTaskHasFPUContext              
+1029e7d8  ulPortYieldRequired                  
+1028d170  unlink                               
+1028e561  uxListRemove                         
+10295dc4  uxTopUsedPriority                    
+1028e8bd  vApplicationGetIdleTaskMemory        
+1028e8d9  vApplicationGetTimerTaskMemory       
+10282ca5  vApplicationIdleHook                 
+1028dcb9  vApplicationLoadHook                 
+1028e399  vApplicationStackOverflowHook        
+1028d337  vHeapCreateStatic                    
+1028ac4d  vHeapFree                            
+1028ec05  vListInitialise                      
+10285e39  vListInitialiseItem                  
+1028e1cd  vListInsert                          
+1028ea5b  vListInsertEnd                       
+1027d9af  vPortConfigTimerForRunTimeStats      
+1028ea75  vPortFree                            
+1029ebb4  vPortRestoreTaskContext              
+1028e8f5  vPortTimerTickHandler                
+102807b3  vPortValidateInterruptPriority       
+1028ed71  vPortYeildFromISR                    
+1028e585  vQueueAddToRegistry                  
+1028dcf1  vQueueDelete                         
+1028e3c1  vQueueUnregisterQueue                
+1028d37d  vQueueWaitForMessageRestricted       
+1028cd7d  vTaskDelay                           
+1028a5a1  vTaskDelete                          
+1028eb79  vTaskEnterCritical                   
+1028e5a9  vTaskExitCritical                    
+1028b48d  vTaskGetInfo                         
+1028ed81  vTaskInternalSetTimeOutState         
+1027f025  vTaskMissedYield                     
+1028d555  vTaskPlaceOnEventList                
+1028cdc9  vTaskPlaceOnEventListRestricted      
+10289939  vTaskPriorityDisinheritAfterTimeout  
+1028a6d1  vTaskStartScheduler                  
+1028ed91  vTaskSuspendAll                      
+102879bd  vTaskSwitchContext                   
+10275ca4  virtToPhymap                         
+1028e911  vprintf_                             
+1028e79c  wcslen                               
+1028de60  write                                
+1028eb91  xPortStartScheduler                  
+1028e92d  xQueueCreateMutexStatic              
+10287d49  xQueueGenericCreateStatic            
+1028b9dd  xQueueGenericReset                   
+10284c0d  xQueueGenericSend                    
+10287341  xQueueGenericSendFromISR             
+10287b89  xQueueGiveFromISR                    
+1028d1b9  xQueueGiveMutexRecursive             
+102851bd  xQueueReceive                        
+10288709  xQueueReceiveFromISR                 
+102754b0  xQueueRegistry                       
+10284241  xQueueSemaphoreTake                  
+1028d491  xQueueTakeMutexRecursive             
+1028aa25  xTaskCheckForTimeOut                 
+10288ae1  xTaskCreateStatic                    
+102804d5  xTaskGetCurrentTaskHandle            
+1028e07d  xTaskGetIdleTaskHandle               
+1028e949  xTaskGetSchedulerState               
+1028eba9  xTaskGetTickCount                    
+10287c69  xTaskIncrementTick                   
+10289b29  xTaskPriorityDisinherit              
+1028b295  xTaskPriorityInherit                 
+1028b509  xTaskRemoveFromEventList             
+102887cd  xTaskResumeAll                       
+1028bc21  xTimerCreateTimerTask                
+1028bf9d  xTimerGenericCommand                 
+
+
+GLOBAL SYMBOLS: SORTED BY Symbol Address 
+
+address   name                                 
+-------   ----                                 
+00000000  __TI_static_base__                   
+00000000  _vectors                             
+00000100  __ABORT_STACK_SIZE                   
+00000100  __FIQ_STACK_SIZE                     
+00000100  __IRQ_STACK_SIZE                     
+00000100  __UNDEFINED_STACK_SIZE               
+00001000  __SVC_STACK_SIZE                     
+00001000  __SYSMEM_SIZE                        
+00002000  __STACK_SIZE                         
+10220000  __BSS_START                          
+10220000  gAppTskStackMain                     
+10240000  gCsiRxCfgTskStack                    
+10260000  gMmwCtrlTskStack                     
+10270000  gHwiCtrl                             
+10272008  gReadBuf                             
+10273008  gClockCtrl                           
+10273e7c  gMMWave_MCB                          
+10274770  gWriteBuf                            
+10275160  gCSIRXState                          
+10275290  _CIOBUF_                             
+10275290  __CIOBUF_                            
+102754b0  xQueueRegistry                       
+102755b0  __TI_tmpnams                         
+10275650  gTaskP_ctrl                          
+102758a0  gAppTaskObj                          
+1027592c  gCsiConfigTaskObj                    
+102759b8  gMmwCtrlTaskObj                      
+10275b44  gCbuffObject                         
+10275c14  gRovDummyQueue                       
+10275c64  gGpioHwiObject                       
+10275ca4  virtToPhymap                         
+10275cb4  gEdmaHandle                          
+10275cc0  gMibspiHandle                        
+10275ccc  gCSIRXErrorCode                      
+10275cd4  parmbuf                              
+10275ce8  gAppTask                             
+10275cec  gCsiConfigTask                       
+10275cf0  gMmwCtrlTask                         
+10275d00  __BSS_END                            
+10275d00  _sys_memory                          
+10276d00  __stack                              
+10278d00  __STACK_END                          
+10278d01  MMWave_configLink                    
+1027a2e3  AddrTranslateP_getLocalAddr          
+1027a2e4  __TI_printfi_nofloat                 
+1027b0c5  GPIO_getHighLowLevelPendingInterrupt 
+1027b0d1  MMWave_openLink                      
+1027bbad  MIBSPI_open                          
+1027c2ad  CBUFF_deinitLVDS                     
+1027c2b1  rlDriverMsgRead                      
+1027c987  SOC_getSelfCpuClk                    
+1027c991  rlDriverCmdSendRetry                 
+1027d511  MMWave_asyncEventHandler             
+1027d9af  vPortConfigTimerForRunTimeStats      
+1027d9b1  MmwCascade_CSIConfig                 
+1027ddb9  EDMA_allocDmaChannel                 
+1027ddc1  Mmwave_populateDefaultChirpControlCfg
+1027e1b4  __aeabi_errno_addr                   
+1027e1c1  MmwCascade_mmWaveTest                
+1027e594  malloc                               
+1027e5a1  Cascade_LVDSStream_EDMAInit          
+1027e939  MIBSPI_edmaTransfer                  
+1027ecc9  CSIRX_commonSetConfig                
+1027f025  vTaskMissedYield                     
+1027f031  rlSetMultiBpmChirpConfig             
+1027f639  EDMA_allocParam                      
+1027f641  rlDriverInit                         
+1027ff1d  ClockP_getTimerCount                 
+102801f9  EDMA_allocTcc                        
+10280201  rlSetChirpConfig                     
+102804d5  xTaskGetCurrentTaskHandle            
+102804e1  MCPI_setFeatureTestResult            
+102807b3  vPortValidateInterruptPriority       
+102807b4  CSL_armR5ReadMpidrReg                
+10280a7d  ClockP_timerClearOverflowInt         
+10280d3d  SOC_moduleClockEnable                
+10280d41  rlRfSetPhaseShiftConfig              
+10280ff5  EDMA_init                            
+10281295  SOC_rcmSetPeripheralClock            
+1028151d  SOC_moduleSetClockFrequency          
+10281521  MMWave_computeCRC                    
+10281765  CBUFF_open                           
+102819a5  TimerP_getReloadCount                
+102819b1  rlDriverExecuteGetApi                
+10281bed  CBUFF_configEDMA                     
+10281e25  TimerP_start                         
+10281e31  rlDriverExecuteSetApi                
+10282069  EDMA_freeDmaChannel                  
+10282071  rlDriverCmdInvoke                    
+1028228b  CSIRX_contextDisable                 
+10282291  MmwCascade_csirxCommonCallback       
+102824a9  MIBSPI_transfer                      
+102828b5  CSIRX_complexioSetConfig             
+10282ab1  CBUFF_openLVDS                       
+10282ca5  vApplicationIdleHook                 
+10282cb1  MMWave_startLink                     
+10282ea1  rlDevSetFillLUTBuff                  
+10283089  EDMA_freeParam                       
+10283091  rlDriverMsgReadSpawnCtx              
+10283275  CSIRX_contextSetConfig               
+10283454  __aeabi_uidiv                        
+10283454  __udivsi3                            
+10283625  EDMA_freeTcc                         
+1028362c  _nop                                 
+10283631  rlDriverAddDevice                    
+102837fb  CSIRX_contextEnable                  
+10283801  CSIRX_dphySetConfig                  
+10283b80  aligned_alloc                        
+10283b80  memalign                             
+10283d38  free                                 
+10283ef1  MIBSPI_edmaAllocChResource           
+1028409c  fputs                                
+10284241  xQueueSemaphoreTake                  
+102843e5  TimerP_clearOverflowInt              
+10284595  CBUFF_activateSession                
+10284731  CBUFF_createSession                  
+10284c0d  xQueueGenericSend                    
+10284d91  rlDevicePowerOn                      
+10285069  CBUFF_initLVDS                       
+102851bd  xQueueReceive                        
+10285310  ceil                                 
+10285310  ceill                                
+102855ac  setvbuf                              
+102856f1  CBUFF_setup_USER                     
+1028582c  fseek                                
+10285831  MMWave_deviceGetVersion              
+10285971  rlRfPhShiftCalibDataRestore          
+10285aa3  uiPortGetRunTimeCounterValue         
+10285aab  GPIO_moduleEnable                    
+10285ab1  rlDriverDeInit                       
+10285bdd  ClockP_init                          
+10285d05  SemaphoreP_destruct                  
+10285d11  rlRfCalibDataRestore                 
+10285e39  vListInitialiseItem                  
+10285e41  Drivers_open                         
+10285f68  open                                 
+10286089  CBUFF_closeEDMA                      
+102861a1  TimerP_setup                         
+102862b8  __udivmoddi4                         
+102865fc  remove                               
+10286829  MIBSPI_close                         
+10286938  __aeabi_memcpy                       
+10286938  __aeabi_memcpy4                      
+10286938  __aeabi_memcpy8                      
+10286941  rlSetMultiAdvChirpLUTConfig          
+10286b55  MIBSPI_dmaDoneCb                     
+10286c59  CBUFF_close                          
+10286d55  EDMA_open                            
+10286e51  MIBSPI_edmaFreeChResource            
+10286f51  MMWave_addChirp                      
+10287051  MMWave_getChirpHandle                
+10287151  MMWave_executeLink                   
+10287248  fopen                                
+10287341  xQueueGenericSendFromISR             
+10287435  CRC_configure                        
+10287615  pvHeapMalloc                         
+10287701  MMWave_addProfile                    
+102878d4  fputc                                
+102879bd  vTaskSwitchContext                   
+10287aa5  SOC_virtToPhy                        
+10287b89  xQueueGiveFromISR                    
+10287c69  xTaskIncrementTick                   
+10287d49  xQueueGenericCreateStatic            
+10287e21  MMWave_getBpmChirpHandle             
+10287f01  MMWave_getPhaseShiftChirpHandle      
+10287fd9  MIBSPI_socMemInit                    
+102880ad  CSIRX_close                          
+10288181  MMWave_getAdvChirpHandle             
+10288321  MMWave_addPhaseShiftChirp            
+102883f1  MmwCascade_combinedEOLcallback       
+102884b8  getdevice                            
+10288645  EDMA_unregisterIntr                  
+10288709  xQueueReceiveFromISR                 
+102887cd  xTaskResumeAll                       
+10288891  MMWave_getProfileHandle              
+10288961  MMWave_init                          
+10288ae1  xTaskCreateStatic                    
+10288ba1  MMWave_getChirpCfg                   
+10288c61  CBUFF_setVC                          
+10288d1d  EDMA_registerIntr                    
+10288de1  MMWave_spawn                         
+10289181  rlDeviceGetVersion                   
+10289241  MMWave_stopLink                      
+102892f9  EDMA_freeChannelRegion               
+102893ac  __TI_closefile                       
+10289460  fseeko                               
+10289515  CSIRX_complexioGetPendingIntr        
+102895c9  CSIRX_open                           
+10289679  TaskP_loadUpdateAll                  
+102897e1  rlDriverConstructInMsg               
+10289891  MMWave_initLink                      
+10289939  vTaskPriorityDisinheritAfterTimeout  
+102899e1  rlSetProfileConfig                   
+10289b29  xTaskPriorityDisinherit              
+10289bcc  HOSTrename                           
+10289c71  MMWave_getPhaseShiftChirpCfg         
+10289d11  MMWave_getProfileCfg                 
+10289db1  MMWave_getNumAdvChirpParams          
+10289e51  MMWave_getNumBpmChirp                
+10289ef1  MMWave_getNumPhaseShiftChirp         
+10289f91  MMWave_getNumProfiles                
+1028a02c  __TI_wrt_ok                          
+1028a0d1  Cascade_LVDSStreamSwConfig           
+1028a171  Mmwave_populateDefaultOpenCfg        
+1028a20c  HOSTlseek                            
+1028a2a4  fprintf                              
+1028a33c  printf                               
+1028a3e1  MMWave_start                         
+1028a478  HOSTopen                             
+1028a50d  eTaskGetState                        
+1028a5a1  vTaskDelete                          
+1028a641  configureTransfer                    
+1028a6d1  vTaskStartScheduler                  
+1028a761  MMWave_getNumChirps                  
+1028a881  Cascade_LVDSStreamInit               
+1028a998  close                                
+1028aa25  xTaskCheckForTimeOut                 
+1028aab1  MMWave_osalSemCreate                 
+1028ab3c  __TI_doflush                         
+1028abc5  pxPortInitialiseStack                
+1028ac4d  vHeapFree                            
+1028acd5  CBUFF_initLVDSLinkListParams         
+1028ad59  CBUFF_setupTransfer                  
+1028aee4  HOSTread                             
+1028af68  HOSTwrite                            
+1028afed  SOC_controlModuleUnlockMMR           
+1028b071  rlDeviceFileDownload                 
+1028b101  MmwCascade_csirxClose                
+1028b191  main                                 
+1028b295  xTaskPriorityInherit                 
+1028b315  CSIRX_reset                          
+1028b393  EDMA_configureChannelRegion          
+1028b48d  vTaskGetInfo                         
+1028b509  xTaskRemoveFromEventList             
+1028b591  MMWave_osalMutexCreate               
+1028b611  rlDevicePowerOff                     
+1028b68d  MIBSPI_init                          
+1028b781  MMWave_initCRC                       
+1028b801  rlDriverHostIrqHandler               
+1028b878  snprintf                             
+1028b9dd  xQueueGenericReset                   
+1028ba51  CSIRX_commonGetPendingIntr           
+1028bad1  MmwCascade_csirxInit                 
+1028bb41  PowerClock_init                      
+1028bbb0  atoi                                 
+1028bc21  xTimerCreateTimerTask                
+1028bc91  EDMA_disableTransferRegion           
+1028bcff  EDMA_enableTransferRegion            
+1028bd6d  EDMA_close                           
+1028bdd8  HOSTunlink                           
+1028be51  MMWave_deinitLink                    
+1028bebc  finddevice                           
+1028bf31  rlGetSubBlock                        
+1028bf9d  xTimerGenericCommand                 
+1028c079  SOC_controlModuleLockMMR             
+1028c0e1  _DebugP_logZone                      
+1028c221  MMWave_deinit                        
+1028c291  MMWave_open                          
+1028c2f9  SemaphoreP_constructBinary           
+1028c361  rlDeviceAdvFrameConfigApply          
+1028c3d1  rlDeviceFrameConfigApply             
+1028c434  HOSTclose                            
+1028c4a1  MMWave_config                        
+1028c5c1  rlSetFrameConfig                     
+1028c621  MMWave_execute                       
+1028c681  Drivers_close                        
+1028c6dd  CycleCounterP_init                   
+1028c6ed  CycleCounterP_nsToTicks              
+1028c715  CycleCounterP_reset                  
+1028c795  CSIRX_contextGetPendingIntr          
+1028c845  _DebugP_assert                       
+1028c89c  __TI_cleanup                         
+1028c8f4  __TI_readmsg                         
+1028c94c  __TI_writemsg                        
+1028c998  C$$IO$$                              
+1028caa5  SemaphoreP_pend                      
+1028caf8  exit                                 
+1028cb51  rlSetAdvFrameConfig                  
+1028cba0  __TI_auto_init_nobinit_nopinit       
+1028cbf1  EDMA_disableChInShadowRegRegion      
+1028cc8c  fclose                               
+1028cd31  rlAppendSubBlock                     
+1028cd7d  vTaskDelay                           
+1028cdc9  vTaskPlaceOnEventListRestricted      
+1028ce15  SemaphoreP_post                      
+1028ce61  rlDeviceSetCsi2Config                
+1028ceb1  rlDeviceSetDataFmtConfig             
+1028cf01  rlDeviceSetDataPathClkConfig         
+1028cf51  rlDeviceSetDataPathConfig            
+1028cfa1  rlDeviceSetLaneConfig                
+1028cff1  rlDeviceSetMiscConfig                
+1028d03d  ClockP_getTimeUsec                   
+1028d091  MmwCascade_csirxCombinedEOFcallback  
+1028d0e1  MmwCascade_csirxOpen                 
+1028d128  memccpy                              
+1028d170  unlink                               
+1028d1b9  xQueueGiveMutexRecursive             
+1028d201  CRC_initialize                       
+1028d251  MMWave_close                         
+1028d2a1  MMWave_listCat                       
+1028d2f1  MMWave_stop                          
+1028d337  vHeapCreateStatic                    
+1028d37d  vQueueWaitForMessageRestricted       
+1028d409  SemaphoreP_constructMutex            
+1028d491  xQueueTakeMutexRecursive             
+1028d4d5  EDMA_mapChToEvtQ                     
+1028d555  vTaskPlaceOnEventList                
+1028d595  CSIRX_contextSetPingPongAddress      
+1028d5d5  EDMA_getBaseAddr                     
+1028d611  MMWave_internalLinkSync              
+1028d6d1  Dpl_init                             
+1028d751  rlDeviceRfStart                      
+1028d801  Mmwave_ctrlTask                      
+1028d841  rlDeviceSetHsiClk                    
+1028d881  rlEnableContMode                     
+1028d8c1  rlRfInit                             
+1028d901  rlRfInitCalibConfig                  
+1028d941  rlRfRunTimeCalibConfig               
+1028d981  rlRfSetCalMonFreqLimitConfig         
+1028d9c1  rlRfSetCalMonTimeUnitConfig          
+1028da01  rlRfSetDeviceCfg                     
+1028da41  rlRfSetLdoBypassConfig               
+1028da81  rlRfSetMiscConfig                    
+1028dac1  rlSensorStart                        
+1028db01  rlSensorStop                         
+1028db41  rlSetAdcOutConfig                    
+1028db81  rlSetAdvChirpConfig                  
+1028dbc1  rlSetBpmCommonConfig                 
+1028dc01  rlSetChannelConfig                   
+1028dc41  rlSetContModeConfig                  
+1028dc81  rlSetLowPowerModeConfig              
+1028dcb9  vApplicationLoadHook                 
+1028dcf1  vQueueDelete                         
+1028dd29  ClockP_usleep                        
+1028dd5d  EDMA_clrMissEvtRegion                
+1028dd91  HeapP_construct                      
+1028ddf8  lseek                                
+1028de2c  puts                                 
+1028de60  write                                
+1028def9  EDMA_unmapChToEvtQ                   
+1028df2b  MIBSPI_edmaOpen                      
+1028df5d  CBUFF_closeLVDS                      
+1028dfbd  GPIO_markHighLowLevelInterrupt       
+1028e04c  CycleCounterP_getCount32             
+1028e054  PmuP_setup                           
+1028e05c  PmuP_enableCounters                  
+1028e064  PmuP_disableCounters                 
+1028e06c  PmuP_getOverflowStatus               
+1028e074  PmuP_clearOverflowStatus             
+1028e07d  xTaskGetIdleTaskHandle               
+1028e0ad  CRC_channelReset                     
+1028e109  EDMA_enableChInShadowRegRegion       
+1028e137  GPIO_setTrigType                     
+1028e171  Mmwave_eventFxn                      
+1028e19f  Pinmux_config                        
+1028e1cd  vListInsert                          
+1028e1fd  ClockP_timerTickIsr                  
+1028e229  EDMA_getHandle                       
+1028e2a9  CRC_getPSASig                        
+1028e2d1  CRC_getPSASigRegAddr                 
+1028e2f9  CSIRX_contextClearAllIntr            
+1028e321  EDMA_disableTccInShadowRegRegion     
+1028e371  MMWave_decodeError                   
+1028e399  vApplicationStackOverflowHook        
+1028e3c1  vQueueUnregisterQueue                
+1028e3e9  EDMA_enableTccInShadowRegRegion      
+1028e40f  EDMA_setPaRAM                        
+1028e461  System_init                          
+1028e489  CSIRX_init                           
+1028e4ad  ClockP_sleep                         
+1028e4d1  TimerP_Params_init                   
+1028e561  uxListRemove                         
+1028e585  vQueueAddToRegistry                  
+1028e5a9  vTaskExitCritical                    
+1028e5cc  __aeabi_uldivmod                     
+1028e5f1  CSIRX_complexioGetPowerStatus        
+1028e613  CSIRX_complexioIsResetDone           
+1028e635  EDMA_linkChannel                     
+1028e657  GPIO_setDirMode                      
+1028e6bb  CSIRX_commonDisable                  
+1028e6db  CSIRX_commonEnable                   
+1028e6fb  CSIRX_complexioDeassertReset         
+1028e71b  CSIRX_complexioSetPowerCommand       
+1028e73d  DebugP_logZoneEnable                 
+1028e79c  wcslen                               
+1028e7db  CSIRX_commonClearAllIntr             
+1028e7f7  CSIRX_complexioClearAllIntr          
+1028e813  HeapP_alloc                          
+1028e831  MMWave_listRemove                    
+1028e84d  SOC_rcmGetR5Clock                    
+1028e8bd  vApplicationGetIdleTaskMemory        
+1028e8d9  vApplicationGetTimerTaskMemory       
+1028e8f5  vPortTimerTickHandler                
+1028e911  vprintf_                             
+1028e92d  xQueueCreateMutexStatic              
+1028e949  xTaskGetSchedulerState               
+1028e964  TI_memcpy_small                      
+1028e980  __aeabi_memset                       
+1028e980  __aeabi_memset4                      
+1028e980  __aeabi_memset8                      
+1028e990  __aeabi_memclr                       
+1028e990  __aeabi_memclr4                      
+1028e990  __aeabi_memclr8                      
+1028e99d  CBUFF_finalizeLVDSLinkListParams     
+1028e9b7  CSL_armR5GetCpuID                    
+1028e9d1  GPIO_clearInterrupt                  
+1028e9eb  GPIO_enableInterrupt                 
+1028ea05  HeapP_free                           
+1028ea21  MMWave_listAdd                       
+1028ea41  rlDriverIsDeviceMapValid             
+1028ea5b  vListInsertEnd                       
+1028ea75  vPortFree                            
+1028ea8f  CBUFF_shutdownTransfer               
+1028eaa7  GPIO_pinRead                         
+1028eac1  MMWave_osalMutexLock                 
+1028eaf9  TimerP_getCount                      
+1028eb11  _system_pre_init                     
+1028eb41  pvTaskIncrementMutexHeldCount        
+1028eb61  rlDriverFillPayload                  
+1028eb79  vTaskEnterCritical                   
+1028eb91  xPortStartScheduler                  
+1028eba9  xTaskGetTickCount                    
+1028ebc0  TI_memset_small                      
+1028ebd9  GPIO_pinWriteHigh                    
+1028ebef  GPIO_pinWriteLow                     
+1028ec05  vListInitialise                      
+1028ec65  ClockP_usecToTicks                   
+1028ec79  EDMA_dmaSetPaRAMEntry                
+1028ec8d  EDMA_getRegionId                     
+1028eca1  MMWave_encodeError                   
+1028ecb5  SOC_rcmIsR5FInLockStepMode           
+1028ece1  MMWave_osalSemWait                   
+1028ed01  rlAppendDummy                        
+1028ed33  EDMA_ccPaRAMEntry_init               
+1028ed51  MMWave_closeLink                     
+1028ed71  vPortYeildFromISR                    
+1028ed81  vTaskInternalSetTimeOutState         
+1028ed91  vTaskSuspendAll                      
+1028eda1  Mmwave_populateDefaultCalibrationCfg 
+1028edb1  Pinmux_init                          
+1028edc1  rlDriverGetPlatformId                
+1028edd1  MMWave_osalMutexDelete               
+1028ede1  MMWave_osalMutexUnlock               
+1028edf1  MMWave_osalSemDelete                 
+1028ee01  MMWave_osalSemSignal                 
+1028ee11  rlDriverConstructOutMsg              
+1028ee21  rlDriverGetHandle                    
+1028ee31  rlGetSubBlockId                      
+1028ee41  rlGetSubBlockLen                     
+1028ee51  Board_driversOpen                    
+1028ee71  MMWave_listGetHead                   
+1028ee81  MMWave_listGetNext                   
+1028eea0  __aeabi_idiv0                        
+1028eeb0  __aeabi_ldiv0                        
+1028eec1  rlDeviceAddDevices                   
+1028eed1  Board_driversClose                   
+1028eee1  Board_init                           
+1028ef11  putchar_                             
+10295620  __aeabi_ctype_table_                 
+10295620  __aeabi_ctype_table_C                
+10295b34  gCacheL1dCacheLineSize               
+10295b88  gMpuRegionConfig                     
+10295cc0  gSocRcmPeripheralClkSrcInfoMap       
+10295dac  gMpuConfig                           
+10295db8  gCacheConfig                         
+10295dc0  gCacheL1pCacheLineSize               
+10295dc4  uxTopUsedPriority                    
+10295e00  advChirpLUTBuf                       
+10298e00  gCbuffSession                        
+1029b6fc  __TI_ft_end                          
+1029da10  rl_rxMsg                             
+1029dc10  rl_txMsg                             
+1029df30  _ftable                              
+1029e020  gMibspiOpenParams                    
+1029e0f8  gMmwCascadeMCB                       
+1029e308  gCsirxCommonConfig                   
+1029e420  _device                              
+1029e504  gCsirxPhyEnable                      
+1029e508  gCsirxDphyConfig                     
+1029e520  gCsirxComplexioConfig                
+1029e56c  _stream                              
+1029e5bc  gSocModules                          
+1029e5d0  gSocModulesClockFrequency            
+1029e600  pxCurrentTCB                         
+1029e604  FreeRTOS_errno                       
+1029e640  gConfigCsirx0ContextConfig           
+1029e67c  gConfigCsirx1ContextConfig           
+1029e6b8  gCBUFFInterfaceFxn                   
+1029e6f0  gCbuffAttrs                          
+1029e720  gCsirxHwAttrs_csirxA_r5f             
+1029e750  gCsirxHwAttrs_csirxB_r5f             
+1029e780  gEdmaConfig                          
+1029e798  gMibspiConfig                        
+1029e7b0  gClockConfig                         
+1029e7c4  phaseShifChirpCfgDev1                
+1029e7cc  phaseShifChirpCfgDev2                
+1029e7d4  ulCriticalNesting                    
+1029e7d8  ulPortYieldRequired                  
+1029e7dc  ulPortInterruptNesting               
+1029e7e0  ulPortSchedularRunning               
+1029e7e4  gCsirxConfig                         
+1029e7f4  MCPI_Result                          
+1029e7f8  MCPI_FailSignature                   
+1029e800  gEdmaParams                          
+1029e80c  csirx0CommonCallBackArg              
+1029e810  csirx1CommonCallBackArg              
+1029e81c  __TI_cleanup_ptr                     
+1029e820  __TI_dtors_ptr                       
+1029e824  __aeabi_errno                        
+1029e838  _lock                                
+1029e83c  _unlock                              
+1029e840  gCbuffObjectPtr                      
+1029e844  gCsirxConfigNum                      
+1029e848  gDebugLogZone                        
+1029e84c  gEdmaConfigNum                       
+1029e850  gHwiConfig                           
+1029e854  gMCPILogMessageSize                  
+1029e858  gMibspiConfigNum                     
+1029e85c  gReadBufIndex                        
+1029e860  gWriteBufIndex                       
+1029e868  ulPortTaskHasFPUContext              
+1029e86f  isMapAvailable                       
+1029e871  pmicRegRead                          
+1029e881  HwiP_enableInt                       
+1029e8a9  HwiP_disableInt                      
+1029e8d9  HwiP_restoreInt                      
+1029e8e5  HwiP_clearInt                        
+1029e905  HwiP_post                            
+1029e92d  HwiP_Params_init                     
+1029e941  HwiP_construct                       
+1029ea69  HwiP_destruct                        
+1029eae1  HwiP_init                            
+1029eba1  HwiP_inISR                           
+1029ebb4  vPortRestoreTaskContext              
+1029ebec  HwiP_svc_handler                     
+1029ec5c  HwiP_irq_handler                     
+1029eda1  HwiP_irq_handler_c                   
+1029ee31  HwiP_fiq_handler                     
+1029eeb1  HwiP_reserved_handler                
+1029eed7  HwiP_undefined_handler               
+1029eefd  HwiP_prefetch_abort_handler          
+1029ef23  HwiP_data_abort_handler              
+1029ef48  HwiP_disable                         
+1029ef58  HwiP_disableFIQ                      
+1029ef68  HwiP_enable                          
+1029ef78  HwiP_enableFIQ                       
+1029ef88  HwiP_restore                         
+1029ef90  HwiP_enableVIC                       
+1029efa0  HwiP_disableVIC                      
+1029efb0  HwiP_getCPSR                         
+1029efc0  CacheP_disableL1d                    
+1029efe8  CacheP_disableL1p                    
+1029f000  CacheP_enableL1d                     
+1029f018  CacheP_enableL1p                     
+1029f030  CacheP_invL1d                        
+1029f068  CacheP_invL1p                        
+1029f0a4  CacheP_invL1dAll                     
+1029f0ac  CacheP_invL1pAll                     
+1029f0b4  CacheP_wb                            
+1029f0f0  CacheP_wbInv                         
+1029f12c  CacheP_wbAll                         
+1029f1d4  CacheP_wbInvAll                      
+1029f1ec  CacheP_wbInvAllAsm                   
+1029f28c  CacheP_getEnabled                    
+1029f2c4  CacheP_getCacheLevelInfo             
+1029f2d0  CacheP_configForceWrThru             
+1029f2f0  CacheP_setDLFO                       
+1029f301  CacheP_init                          
+1029f359  CacheP_disable                       
+1029f393  CacheP_enable                        
+1029f3b3  CacheP_inv                           
+1029f3f1  MpuP_RegionAttrs_init                
+1029f3ff  MpuP_setRegion                       
+1029f4a3  MpuP_enable                          
+1029f4db  MpuP_disable                         
+1029f50d  MpuP_isEnable                        
+1029f511  MpuP_init                            
+1029f570  MpuP_disableAsm                      
+1029f588  MpuP_disableBRAsm                    
+1029f598  MpuP_enableAsm                       
+1029f5b0  MpuP_enableBRAsm                     
+1029f5c0  MpuP_isEnableAsm                     
+1029f5d4  MpuP_setRegionAsm                    
+1029f600  _c_int00_sbl                         
+1029f624  _c_int00                             
+1029f6fd  _DebugP_assertNoLog                  
+1029f721  __mpu_init                           
+1029f730  C$$EXIT                              
+1029f730  abort                                
+1029f738  __IRQ_STACK_START                    
+1029f838  __FIQ_STACK_START                    
+1029f838  __IRQ_STACK_END                      
+1029f938  __FIQ_STACK_END                      
+1029f938  __SVC_STACK_START                    
+102a0938  __ABORT_STACK_START                  
+102a0938  __SVC_STACK_END                      
+102a0a38  __ABORT_STACK_END                    
+102a0a38  __UNDEFINED_STACK_START              
+102a0b38  __UNDEFINED_STACK_END                
+88000000  CSIA_PongBuf                         
+88001000  CSIB_PongBuf                         
+88002000  CSIA_PingBuf                         
+88003000  CSIB_PingBuf                         
+88004000  MCPI_logMessage                      
+ffffffff  __TI_pprof_out_hndl                  
+ffffffff  __TI_prof_data_size                  
+ffffffff  __TI_prof_data_start                 
+ffffffff  __binit__                            
+ffffffff  binit                                
+UNDEFED   __TI_CINIT_Base                      
+UNDEFED   __TI_CINIT_Limit                     
+UNDEFED   __TI_Handler_Table_Base              
+UNDEFED   __TI_Handler_Table_Limit             
+UNDEFED   _system_post_cinit                   
+
+[614 symbols]
